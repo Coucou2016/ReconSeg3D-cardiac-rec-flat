@@ -1,0 +1,943 @@
+{
+  "purpose": "flat snapshot; key = flat root-level filename, value = original repo-relative path",
+  "source_repo": "https://github.com/Coucou2016/ReconSeg3D-cardiac-rec",
+  "n_files": 234,
+  "files": {
+    ".gitignore": {
+      "original_path": ".gitignore",
+      "bytes": 430
+    },
+    "CITATION.cff": {
+      "original_path": "CITATION.cff",
+      "bytes": 923
+    },
+    "LICENSE": {
+      "original_path": "LICENSE",
+      "bytes": 725
+    },
+    "README.md": {
+      "original_path": "README.md",
+      "bytes": 7516
+    },
+    "artifacts__chatgpt_handoff__github_briefs__20260913_ed_es_experiment_matrix.md": {
+      "original_path": "artifacts/chatgpt_handoff/github_briefs/20260913_ed_es_experiment_matrix.md",
+      "bytes": 1307
+    },
+    "artifacts__chatgpt_handoff__github_briefs__20260913_inv_consistency_review.md": {
+      "original_path": "artifacts/chatgpt_handoff/github_briefs/20260913_inv_consistency_review.md",
+      "bytes": 1385
+    },
+    "artifacts__chatgpt_handoff__github_briefs__20260914_p0_gap_closure_brief.md": {
+      "original_path": "artifacts/chatgpt_handoff/github_briefs/20260914_p0_gap_closure_brief.md",
+      "bytes": 694
+    },
+    "artifacts__chatgpt_handoff__github_briefs__20260915_full_roadmap_closure_brief.md": {
+      "original_path": "artifacts/chatgpt_handoff/github_briefs/20260915_full_roadmap_closure_brief.md",
+      "bytes": 1149
+    },
+    "artifacts__chatgpt_handoff__github_briefs__20260915_round2_p0_advisor_brief.md": {
+      "original_path": "artifacts/chatgpt_handoff/github_briefs/20260915_round2_p0_advisor_brief.md",
+      "bytes": 1078
+    },
+    "artifacts__chatgpt_handoff__github_briefs__ASK_CHATGPT.md": {
+      "original_path": "artifacts/chatgpt_handoff/github_briefs/ASK_CHATGPT.md",
+      "bytes": 2603
+    },
+    "artifacts__chatgpt_handoff__github_briefs__round1_paper_vs_report_novelty.md": {
+      "original_path": "artifacts/chatgpt_handoff/github_briefs/round1_paper_vs_report_novelty.md",
+      "bytes": 3724
+    },
+    "artifacts__chatgpt_handoff__github_briefs__round2_related_work_venue.md": {
+      "original_path": "artifacts/chatgpt_handoff/github_briefs/round2_related_work_venue.md",
+      "bytes": 2113
+    },
+    "artifacts__chatgpt_handoff__github_briefs__round3_methods_review.md": {
+      "original_path": "artifacts/chatgpt_handoff/github_briefs/round3_methods_review.md",
+      "bytes": 1674
+    },
+    "artifacts__chatgpt_handoff__github_briefs__round4_results_figures.md": {
+      "original_path": "artifacts/chatgpt_handoff/github_briefs/round4_results_figures.md",
+      "bytes": 1796
+    },
+    "artifacts__chatgpt_handoff__github_briefs__round5_full_polish.md": {
+      "original_path": "artifacts/chatgpt_handoff/github_briefs/round5_full_polish.md",
+      "bytes": 1743
+    },
+    "artifacts__chatgpt_handoff__reports__20260815_ablations_smoke_v2.log": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260815_ablations_smoke_v2.log",
+      "bytes": 23767
+    },
+    "artifacts__chatgpt_handoff__reports__20260815_chatgpt_task_brief.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260815_chatgpt_task_brief.md",
+      "bytes": 3318
+    },
+    "artifacts__chatgpt_handoff__reports__20260815_chatgpt_task_brief_v2.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260815_chatgpt_task_brief_v2.md",
+      "bytes": 3558
+    },
+    "artifacts__chatgpt_handoff__reports__20260815_code_pack_for_chatgpt.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260815_code_pack_for_chatgpt.md",
+      "bytes": 61298
+    },
+    "artifacts__chatgpt_handoff__reports__20260815_dual_agent_live.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260815_dual_agent_live.md",
+      "bytes": 1929
+    },
+    "artifacts__chatgpt_handoff__reports__20260815_session_report.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260815_session_report.md",
+      "bytes": 2372
+    },
+    "artifacts__chatgpt_handoff__reports__20260815_session_report_continue.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260815_session_report_continue.md",
+      "bytes": 3347
+    },
+    "artifacts__chatgpt_handoff__reports__20260815_source_pack_for_chatgpt.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260815_source_pack_for_chatgpt.md",
+      "bytes": 97945
+    },
+    "artifacts__chatgpt_handoff__reports__20260816_chatgpt_audit_response.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260816_chatgpt_audit_response.md",
+      "bytes": 2784
+    },
+    "artifacts__chatgpt_handoff__reports__20260816_chatgpt_github_literature.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260816_chatgpt_github_literature.md",
+      "bytes": 3511
+    },
+    "artifacts__chatgpt_handoff__reports__20260816_chatgpt_literature_followup.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260816_chatgpt_literature_followup.md",
+      "bytes": 4459
+    },
+    "artifacts__chatgpt_handoff__reports__20260816_dual_agent_acceptance.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260816_dual_agent_acceptance.md",
+      "bytes": 4989
+    },
+    "artifacts__chatgpt_handoff__reports__20260816_five_round_acceptance.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260816_five_round_acceptance.md",
+      "bytes": 5735
+    },
+    "artifacts__chatgpt_handoff__reports__20260816_paper_framework_literature.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260816_paper_framework_literature.md",
+      "bytes": 4026
+    },
+    "artifacts__chatgpt_handoff__reports__20260816_pytest_full.log": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260816_pytest_full.log",
+      "bytes": 0
+    },
+    "artifacts__chatgpt_handoff__reports__20260817_five_round_github_md_acceptance.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260817_five_round_github_md_acceptance.md",
+      "bytes": 6490
+    },
+    "artifacts__chatgpt_handoff__reports__20260913_chatgpt_rounds.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260913_chatgpt_rounds.md",
+      "bytes": 973
+    },
+    "artifacts__chatgpt_handoff__reports__20260913_p0_motion_revision_acceptance.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260913_p0_motion_revision_acceptance.md",
+      "bytes": 3119
+    },
+    "artifacts__chatgpt_handoff__reports__20260914_p0_gap_closure.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260914_p0_gap_closure.md",
+      "bytes": 2626
+    },
+    "artifacts__chatgpt_handoff__reports__20260914_p0_round2_acceptance.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260914_p0_round2_acceptance.md",
+      "bytes": 2487
+    },
+    "artifacts__chatgpt_handoff__reports__20260915_full_roadmap_closure.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260915_full_roadmap_closure.md",
+      "bytes": 5837
+    },
+    "artifacts__chatgpt_handoff__reports__20260915_round2_p0_fix.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/20260915_round2_p0_fix.md",
+      "bytes": 4167
+    },
+    "artifacts__chatgpt_handoff__reports__chunks__chunk_01.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/chunks/chunk_01.md",
+      "bytes": 24971
+    },
+    "artifacts__chatgpt_handoff__reports__chunks__chunk_02.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/chunks/chunk_02.md",
+      "bytes": 24019
+    },
+    "artifacts__chatgpt_handoff__reports__chunks__chunk_03.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/chunks/chunk_03.md",
+      "bytes": 27483
+    },
+    "artifacts__chatgpt_handoff__reports__chunks__chunk_04.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/chunks/chunk_04.md",
+      "bytes": 21796
+    },
+    "artifacts__chatgpt_handoff__reports__chunks__part1a.txt": {
+      "original_path": "artifacts/chatgpt_handoff/reports/chunks/part1a.txt",
+      "bytes": 12053
+    },
+    "artifacts__chatgpt_handoff__reports__drops__drop2.b64": {
+      "original_path": "artifacts/chatgpt_handoff/reports/drops/drop2.b64",
+      "bytes": 24628
+    },
+    "artifacts__chatgpt_handoff__reports__drops__drop2_small.txt": {
+      "original_path": "artifacts/chatgpt_handoff/reports/drops/drop2_small.txt",
+      "bytes": 9747
+    },
+    "artifacts__chatgpt_handoff__reports__drops__drop2_train_model.txt": {
+      "original_path": "artifacts/chatgpt_handoff/reports/drops/drop2_train_model.txt",
+      "bytes": 18469
+    },
+    "artifacts__chatgpt_handoff__reports__drops__drop2a.js": {
+      "original_path": "artifacts/chatgpt_handoff/reports/drops/drop2a.js",
+      "bytes": 9395
+    },
+    "artifacts__chatgpt_handoff__reports__drops__drop2a.txt": {
+      "original_path": "artifacts/chatgpt_handoff/reports/drops/drop2a.txt",
+      "bytes": 9182
+    },
+    "artifacts__chatgpt_handoff__reports__drops__drop2a_payload.txt": {
+      "original_path": "artifacts/chatgpt_handoff/reports/drops/drop2a_payload.txt",
+      "bytes": 9273
+    },
+    "artifacts__chatgpt_handoff__reports__drops__drop2b.txt": {
+      "original_path": "artifacts/chatgpt_handoff/reports/drops/drop2b.txt",
+      "bytes": 9287
+    },
+    "artifacts__chatgpt_handoff__reports__drops__drop3_loss_metrics.txt": {
+      "original_path": "artifacts/chatgpt_handoff/reports/drops/drop3_loss_metrics.txt",
+      "bytes": 25181
+    },
+    "artifacts__chatgpt_handoff__reports__drops__drop4_data_ttable_trainer.txt": {
+      "original_path": "artifacts/chatgpt_handoff/reports/drops/drop4_data_ttable_trainer.txt",
+      "bytes": 34802
+    },
+    "artifacts__chatgpt_handoff__reports__rounds__READY_PASTE_PROMPTS.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/rounds/READY_PASTE_PROMPTS.md",
+      "bytes": 1943
+    },
+    "artifacts__chatgpt_handoff__reports__rounds__round1_architecture_novelty.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/rounds/round1_architecture_novelty.md",
+      "bytes": 1949
+    },
+    "artifacts__chatgpt_handoff__reports__rounds__round2_related_work_literature.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/rounds/round2_related_work_literature.md",
+      "bytes": 1733
+    },
+    "artifacts__chatgpt_handoff__reports__rounds__round3_methods_review.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/rounds/round3_methods_review.md",
+      "bytes": 1696
+    },
+    "artifacts__chatgpt_handoff__reports__rounds__round4_results_figures.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/rounds/round4_results_figures.md",
+      "bytes": 1891
+    },
+    "artifacts__chatgpt_handoff__reports__rounds__round5_polish_limitations.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/rounds/round5_polish_limitations.md",
+      "bytes": 1625
+    },
+    "artifacts__chatgpt_handoff__reports__rounds2__round1.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/rounds2/round1.md",
+      "bytes": 1914
+    },
+    "artifacts__chatgpt_handoff__reports__rounds2__round2.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/rounds2/round2.md",
+      "bytes": 1375
+    },
+    "artifacts__chatgpt_handoff__reports__rounds2__round3.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/rounds2/round3.md",
+      "bytes": 1156
+    },
+    "artifacts__chatgpt_handoff__reports__rounds2__round4.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/rounds2/round4.md",
+      "bytes": 1358
+    },
+    "artifacts__chatgpt_handoff__reports__rounds2__round5.md": {
+      "original_path": "artifacts/chatgpt_handoff/reports/rounds2/round5.md",
+      "bytes": 1219
+    },
+    "artifacts__github_url.txt": {
+      "original_path": "artifacts/github_url.txt",
+      "bytes": 54
+    },
+    "artifacts__paper__AWAITING_USER_MANUSCRIPT.md": {
+      "original_path": "artifacts/paper/AWAITING_USER_MANUSCRIPT.md",
+      "bytes": 1747
+    },
+    "artifacts__paper__EVIDENCE_AUDIT.md": {
+      "original_path": "artifacts/paper/EVIDENCE_AUDIT.md",
+      "bytes": 6671
+    },
+    "artifacts__paper__MANUSCRIPT_DRAFT.md": {
+      "original_path": "artifacts/paper/MANUSCRIPT_DRAFT.md",
+      "bytes": 17415
+    },
+    "artifacts__paper__WRITING_FRAMEWORK.md": {
+      "original_path": "artifacts/paper/WRITING_FRAMEWORK.md",
+      "bytes": 7859
+    },
+    "artifacts__paper__figures__fig1_pipeline.pdf": {
+      "original_path": "artifacts/paper/figures/fig1_pipeline.pdf",
+      "bytes": 49429
+    },
+    "artifacts__paper__figures__fig1_pipeline.png": {
+      "original_path": "artifacts/paper/figures/fig1_pipeline.png",
+      "bytes": 91139
+    },
+    "artifacts__paper__figures__fig1_pipeline.svg": {
+      "original_path": "artifacts/paper/figures/fig1_pipeline.svg",
+      "bytes": 5936
+    },
+    "artifacts__paper__figures__fig2_recon_ablation.pdf": {
+      "original_path": "artifacts/paper/figures/fig2_recon_ablation.pdf",
+      "bytes": 33980
+    },
+    "artifacts__paper__figures__fig2_recon_ablation.png": {
+      "original_path": "artifacts/paper/figures/fig2_recon_ablation.png",
+      "bytes": 81838
+    },
+    "artifacts__paper__figures__fig2_recon_ablation.svg": {
+      "original_path": "artifacts/paper/figures/fig2_recon_ablation.svg",
+      "bytes": 37508
+    },
+    "artifacts__paper__figures__fig3_motion_metrics.pdf": {
+      "original_path": "artifacts/paper/figures/fig3_motion_metrics.pdf",
+      "bytes": 47111
+    },
+    "artifacts__paper__figures__fig3_motion_metrics.png": {
+      "original_path": "artifacts/paper/figures/fig3_motion_metrics.png",
+      "bytes": 123230
+    },
+    "artifacts__paper__figures__fig3_motion_metrics.svg": {
+      "original_path": "artifacts/paper/figures/fig3_motion_metrics.svg",
+      "bytes": 51492
+    },
+    "artifacts__paper__figures__fig4_seg_dice.pdf": {
+      "original_path": "artifacts/paper/figures/fig4_seg_dice.pdf",
+      "bytes": 42524
+    },
+    "artifacts__paper__figures__fig4_seg_dice.png": {
+      "original_path": "artifacts/paper/figures/fig4_seg_dice.png",
+      "bytes": 97131
+    },
+    "artifacts__paper__figures__fig4_seg_dice.svg": {
+      "original_path": "artifacts/paper/figures/fig4_seg_dice.svg",
+      "bytes": 45686
+    },
+    "artifacts__paper__figures__fig5_claim_boundary.pdf": {
+      "original_path": "artifacts/paper/figures/fig5_claim_boundary.pdf",
+      "bytes": 40549
+    },
+    "artifacts__paper__figures__fig5_claim_boundary.png": {
+      "original_path": "artifacts/paper/figures/fig5_claim_boundary.png",
+      "bytes": 127791
+    },
+    "artifacts__paper__figures__fig5_claim_boundary.svg": {
+      "original_path": "artifacts/paper/figures/fig5_claim_boundary.svg",
+      "bytes": 29889
+    },
+    "artifacts__paper__figures__figure_meta.json": {
+      "original_path": "artifacts/paper/figures/figure_meta.json",
+      "bytes": 2902
+    },
+    "artifacts__paper__figures__figures_b64.json": {
+      "original_path": "artifacts/paper/figures/figures_b64.json",
+      "bytes": 694904
+    },
+    "artifacts__paper__manuscript.html": {
+      "original_path": "artifacts/paper/manuscript.html",
+      "bytes": 716021
+    },
+    "artifacts__paper__manuscript.pdf": {
+      "original_path": "artifacts/paper/manuscript.pdf",
+      "bytes": 616130
+    },
+    "artifacts__report__pdf_status.txt": {
+      "original_path": "artifacts/report/pdf_status.txt",
+      "bytes": 161
+    },
+    "artifacts__report__report.html": {
+      "original_path": "artifacts/report/report.html",
+      "bytes": 714422
+    },
+    "artifacts__report__report.md": {
+      "original_path": "artifacts/report/report.md",
+      "bytes": 7544
+    },
+    "artifacts__report__report.pdf": {
+      "original_path": "artifacts/report/report.pdf",
+      "bytes": 1010014
+    },
+    "configs__ablations__broadcast_baseline.yaml": {
+      "original_path": "configs/ablations/broadcast_baseline.yaml",
+      "bytes": 1257
+    },
+    "configs__ablations__fusion_concat.yaml": {
+      "original_path": "configs/ablations/fusion_concat.yaml",
+      "bytes": 1042
+    },
+    "configs__ablations__fusion_heart_ttable.yaml": {
+      "original_path": "configs/ablations/fusion_heart_ttable.yaml",
+      "bytes": 1165
+    },
+    "configs__ablations__per_frame_motion.yaml": {
+      "original_path": "configs/ablations/per_frame_motion.yaml",
+      "bytes": 1274
+    },
+    "configs__ablations__per_frame_no_motion.yaml": {
+      "original_path": "configs/ablations/per_frame_no_motion.yaml",
+      "bytes": 1190
+    },
+    "configs__ablations__task_phenotype.yaml": {
+      "original_path": "configs/ablations/task_phenotype.yaml",
+      "bytes": 1234
+    },
+    "configs__ablations__temporal_attention.yaml": {
+      "original_path": "configs/ablations/temporal_attention.yaml",
+      "bytes": 1139
+    },
+    "configs__ablations__temporal_conv_lstm.yaml": {
+      "original_path": "configs/ablations/temporal_conv_lstm.yaml",
+      "bytes": 1153
+    },
+    "configs__baselines__recon_only.yaml": {
+      "original_path": "configs/baselines/recon_only.yaml",
+      "bytes": 1273
+    },
+    "configs__baselines__voxelmorph_compact.yaml": {
+      "original_path": "configs/baselines/voxelmorph_compact.yaml",
+      "bytes": 1320
+    },
+    "configs__default.yaml": {
+      "original_path": "configs/default.yaml",
+      "bytes": 1618
+    },
+    "configs__paper_acdc.yaml": {
+      "original_path": "configs/paper_acdc.yaml",
+      "bytes": 1402
+    },
+    "configs__paper_recon.yaml": {
+      "original_path": "configs/paper_recon.yaml",
+      "bytes": 1440
+    },
+    "configs__proxy__proxy_acdc_phenotype.yaml": {
+      "original_path": "configs/proxy/proxy_acdc_phenotype.yaml",
+      "bytes": 1694
+    },
+    "configs__publication__publication_mms.yaml": {
+      "original_path": "configs/publication/publication_mms.yaml",
+      "bytes": 1266
+    },
+    "configs__publication__publication_motion.yaml": {
+      "original_path": "configs/publication/publication_motion.yaml",
+      "bytes": 1368
+    },
+    "configs__publication__publication_motion_svf.yaml": {
+      "original_path": "configs/publication/publication_motion_svf.yaml",
+      "bytes": 1339
+    },
+    "configs__publication__publication_recon.yaml": {
+      "original_path": "configs/publication/publication_recon.yaml",
+      "bytes": 1592
+    },
+    "configs__publication__publication_recon_256.yaml": {
+      "original_path": "configs/publication/publication_recon_256.yaml",
+      "bytes": 1728
+    },
+    "configs__publication__publication_recon_hires.yaml": {
+      "original_path": "configs/publication/publication_recon_hires.yaml",
+      "bytes": 1522
+    },
+    "configs__publication__publication_seg.yaml": {
+      "original_path": "configs/publication/publication_seg.yaml",
+      "bytes": 1312
+    },
+    "configs__publication_motion.yaml": {
+      "original_path": "configs/publication_motion.yaml",
+      "bytes": 1368
+    },
+    "configs__publication_recon.yaml": {
+      "original_path": "configs/publication_recon.yaml",
+      "bytes": 1592
+    },
+    "configs__publication_seg.yaml": {
+      "original_path": "configs/publication_seg.yaml",
+      "bytes": 1312
+    },
+    "configs__smoke__smoke_motion.yaml": {
+      "original_path": "configs/smoke/smoke_motion.yaml",
+      "bytes": 1264
+    },
+    "configs__smoke_motion.yaml": {
+      "original_path": "configs/smoke_motion.yaml",
+      "bytes": 1343
+    },
+    "docs__BASELINES.md": {
+      "original_path": "docs/BASELINES.md",
+      "bytes": 2346
+    },
+    "docs__DATA.md": {
+      "original_path": "docs/DATA.md",
+      "bytes": 5366
+    },
+    "docs__PAPER_PLAN.md": {
+      "original_path": "docs/PAPER_PLAN.md",
+      "bytes": 8118
+    },
+    "docs__chatgpt__README.md": {
+      "original_path": "docs/chatgpt/README.md",
+      "bytes": 257
+    },
+    "docs__paper__AWAITING_USER_MANUSCRIPT.md": {
+      "original_path": "docs/paper/AWAITING_USER_MANUSCRIPT.md",
+      "bytes": 1747
+    },
+    "docs__paper__EVIDENCE_AUDIT.md": {
+      "original_path": "docs/paper/EVIDENCE_AUDIT.md",
+      "bytes": 6671
+    },
+    "docs__paper__MANUSCRIPT_DRAFT.md": {
+      "original_path": "docs/paper/MANUSCRIPT_DRAFT.md",
+      "bytes": 17415
+    },
+    "docs__paper__WRITING_FRAMEWORK.md": {
+      "original_path": "docs/paper/WRITING_FRAMEWORK.md",
+      "bytes": 7859
+    },
+    "docs__paper__manuscript.html": {
+      "original_path": "docs/paper/manuscript.html",
+      "bytes": 716021
+    },
+    "pyproject.toml": {
+      "original_path": "pyproject.toml",
+      "bytes": 596
+    },
+    "pytest.ini": {
+      "original_path": "pytest.ini",
+      "bytes": 121
+    },
+    "reconseg3d____init__.py": {
+      "original_path": "reconseg3d/__init__.py",
+      "bytes": 211
+    },
+    "reconseg3d__data____init__.py": {
+      "original_path": "reconseg3d/data/__init__.py",
+      "bytes": 731
+    },
+    "reconseg3d__data__acdc.py": {
+      "original_path": "reconseg3d/data/acdc.py",
+      "bytes": 17309
+    },
+    "reconseg3d__data__dataset.py": {
+      "original_path": "reconseg3d/data/dataset.py",
+      "bytes": 19768
+    },
+    "reconseg3d__data__emidec.py": {
+      "original_path": "reconseg3d/data/emidec.py",
+      "bytes": 7710
+    },
+    "reconseg3d__data__io.py": {
+      "original_path": "reconseg3d/data/io.py",
+      "bytes": 12074
+    },
+    "reconseg3d__data__mms.py": {
+      "original_path": "reconseg3d/data/mms.py",
+      "bytes": 9908
+    },
+    "reconseg3d__data__mmwhs.py": {
+      "original_path": "reconseg3d/data/mmwhs.py",
+      "bytes": 6870
+    },
+    "reconseg3d__data__slice_sampling.py": {
+      "original_path": "reconseg3d/data/slice_sampling.py",
+      "bytes": 9081
+    },
+    "reconseg3d__data__splits.py": {
+      "original_path": "reconseg3d/data/splits.py",
+      "bytes": 9314
+    },
+    "reconseg3d__data__transforms.py": {
+      "original_path": "reconseg3d/data/transforms.py",
+      "bytes": 2068
+    },
+    "reconseg3d__inference____init__.py": {
+      "original_path": "reconseg3d/inference/__init__.py",
+      "bytes": 81
+    },
+    "reconseg3d__inference__predictor.py": {
+      "original_path": "reconseg3d/inference/predictor.py",
+      "bytes": 4487
+    },
+    "reconseg3d__models____init__.py": {
+      "original_path": "reconseg3d/models/__init__.py",
+      "bytes": 756
+    },
+    "reconseg3d__models__baselines.py": {
+      "original_path": "reconseg3d/models/baselines.py",
+      "bytes": 4599
+    },
+    "reconseg3d__models__blocks.py": {
+      "original_path": "reconseg3d/models/blocks.py",
+      "bytes": 8047
+    },
+    "reconseg3d__models__heart_ttable.py": {
+      "original_path": "reconseg3d/models/heart_ttable.py",
+      "bytes": 6207
+    },
+    "reconseg3d__models__losses.py": {
+      "original_path": "reconseg3d/models/losses.py",
+      "bytes": 16426
+    },
+    "reconseg3d__models__motion.py": {
+      "original_path": "reconseg3d/models/motion.py",
+      "bytes": 24149
+    },
+    "reconseg3d__models__reconseg3d.py": {
+      "original_path": "reconseg3d/models/reconseg3d.py",
+      "bytes": 12263
+    },
+    "reconseg3d__models__volume_recon.py": {
+      "original_path": "reconseg3d/models/volume_recon.py",
+      "bytes": 4930
+    },
+    "reconseg3d__models__volume_seg.py": {
+      "original_path": "reconseg3d/models/volume_seg.py",
+      "bytes": 3243
+    },
+    "reconseg3d__training____init__.py": {
+      "original_path": "reconseg3d/training/__init__.py",
+      "bytes": 150
+    },
+    "reconseg3d__training__metrics.py": {
+      "original_path": "reconseg3d/training/metrics.py",
+      "bytes": 31982
+    },
+    "reconseg3d__training__trainer.py": {
+      "original_path": "reconseg3d/training/trainer.py",
+      "bytes": 17617
+    },
+    "reconseg3d__utils____init__.py": {
+      "original_path": "reconseg3d/utils/__init__.py",
+      "bytes": 356
+    },
+    "reconseg3d__utils__config.py": {
+      "original_path": "reconseg3d/utils/config.py",
+      "bytes": 1460
+    },
+    "reconseg3d__utils__seed.py": {
+      "original_path": "reconseg3d/utils/seed.py",
+      "bytes": 528
+    },
+    "reconseg3d__utils__shapes.py": {
+      "original_path": "reconseg3d/utils/shapes.py",
+      "bytes": 2553
+    },
+    "requirements.txt": {
+      "original_path": "requirements.txt",
+      "bytes": 169
+    },
+    "scripts__build_report_bundle.py": {
+      "original_path": "scripts/build_report_bundle.py",
+      "bytes": 33745
+    },
+    "scripts__eval.py": {
+      "original_path": "scripts/eval.py",
+      "bytes": 11178
+    },
+    "scripts__make_acdc_folds.py": {
+      "original_path": "scripts/make_acdc_folds.py",
+      "bytes": 1255
+    },
+    "scripts__make_paper_figures.py": {
+      "original_path": "scripts/make_paper_figures.py",
+      "bytes": 11329
+    },
+    "scripts__predict.py": {
+      "original_path": "scripts/predict.py",
+      "bytes": 1838
+    },
+    "scripts__prepare_demo_data.py": {
+      "original_path": "scripts/prepare_demo_data.py",
+      "bytes": 3096
+    },
+    "scripts__run_ablations.py": {
+      "original_path": "scripts/run_ablations.py",
+      "bytes": 4927
+    },
+    "scripts__run_multiseed.py": {
+      "original_path": "scripts/run_multiseed.py",
+      "bytes": 2289
+    },
+    "scripts__summarize_runs.py": {
+      "original_path": "scripts/summarize_runs.py",
+      "bytes": 4072
+    },
+    "scripts__train.py": {
+      "original_path": "scripts/train.py",
+      "bytes": 1485
+    },
+    "splits__README.md": {
+      "original_path": "splits/README.md",
+      "bytes": 1161
+    },
+    "splits__acdc_fold0.json": {
+      "original_path": "splits/acdc_fold0.json",
+      "bytes": 483
+    },
+    "splits__acdc_fold1.json": {
+      "original_path": "splits/acdc_fold1.json",
+      "bytes": 483
+    },
+    "splits__acdc_fold2.json": {
+      "original_path": "splits/acdc_fold2.json",
+      "bytes": 480
+    },
+    "splits__acdc_fold3.json": {
+      "original_path": "splits/acdc_fold3.json",
+      "bytes": 480
+    },
+    "splits__acdc_fold4.json": {
+      "original_path": "splits/acdc_fold4.json",
+      "bytes": 483
+    },
+    "splits__acdc_folds_manifest.json": {
+      "original_path": "splits/acdc_folds_manifest.json",
+      "bytes": 580
+    },
+    "tests__conftest.py": {
+      "original_path": "tests/conftest.py",
+      "bytes": 150
+    },
+    "tests__test_cox.py": {
+      "original_path": "tests/test_cox.py",
+      "bytes": 2983
+    },
+    "tests__test_datasets.py": {
+      "original_path": "tests/test_datasets.py",
+      "bytes": 4999
+    },
+    "tests__test_ed_es.py": {
+      "original_path": "tests/test_ed_es.py",
+      "bytes": 3721
+    },
+    "tests__test_eval_per_case.py": {
+      "original_path": "tests/test_eval_per_case.py",
+      "bytes": 1364
+    },
+    "tests__test_heart_ttable.py": {
+      "original_path": "tests/test_heart_ttable.py",
+      "bytes": 1165
+    },
+    "tests__test_heart_ttable_risk_path.py": {
+      "original_path": "tests/test_heart_ttable_risk_path.py",
+      "bytes": 886
+    },
+    "tests__test_label_propagation.py": {
+      "original_path": "tests/test_label_propagation.py",
+      "bytes": 4199
+    },
+    "tests__test_metrics.py": {
+      "original_path": "tests/test_metrics.py",
+      "bytes": 3387
+    },
+    "tests__test_model_forward.py": {
+      "original_path": "tests/test_model_forward.py",
+      "bytes": 2156
+    },
+    "tests__test_motion.py": {
+      "original_path": "tests/test_motion.py",
+      "bytes": 9035
+    },
+    "tests__test_paper_pipeline.py": {
+      "original_path": "tests/test_paper_pipeline.py",
+      "bytes": 2189
+    },
+    "tests__test_per_frame_recon.py": {
+      "original_path": "tests/test_per_frame_recon.py",
+      "bytes": 1249
+    },
+    "tests__test_publication_gates.py": {
+      "original_path": "tests/test_publication_gates.py",
+      "bytes": 4908
+    },
+    "tests__test_slice_sampling.py": {
+      "original_path": "tests/test_slice_sampling.py",
+      "bytes": 1018
+    },
+    "tests__test_stage2_infra.py": {
+      "original_path": "tests/test_stage2_infra.py",
+      "bytes": 9307
+    },
+    "tests__test_stage2_metrics.py": {
+      "original_path": "tests/test_stage2_metrics.py",
+      "bytes": 6696
+    },
+    "tests__test_task_smoke.py": {
+      "original_path": "tests/test_task_smoke.py",
+      "bytes": 1785
+    },
+    "tests__test_train_smoke.py": {
+      "original_path": "tests/test_train_smoke.py",
+      "bytes": 911
+    },
+    "tests__test_volume_modules.py": {
+      "original_path": "tests/test_volume_modules.py",
+      "bytes": 747
+    },
+    "outputs__ablations_loss_merge_check__ablation_manifest.json": {
+      "original_path": "outputs/ablations_loss_merge_check/ablation_manifest.json",
+      "bytes": 186
+    },
+    "outputs__ablations_loss_merge_check__broadcast_baseline__config_snapshot.yaml": {
+      "original_path": "outputs/ablations_loss_merge_check/broadcast_baseline/config_snapshot.yaml",
+      "bytes": 1113
+    },
+    "outputs__ablations_loss_merge_check__broadcast_baseline__metrics.json": {
+      "original_path": "outputs/ablations_loss_merge_check/broadcast_baseline/metrics.json",
+      "bytes": 1047
+    },
+    "outputs__ablations_loss_merge_check__broadcast_baseline__metrics_train.json": {
+      "original_path": "outputs/ablations_loss_merge_check/broadcast_baseline/metrics_train.json",
+      "bytes": 1025
+    },
+    "outputs__ablations_loss_merge_check__table.csv": {
+      "original_path": "outputs/ablations_loss_merge_check/table.csv",
+      "bytes": 370
+    },
+    "outputs__ablations_loss_merge_check__table.md": {
+      "original_path": "outputs/ablations_loss_merge_check/table.md",
+      "bytes": 639
+    },
+    "outputs__ablations_smoke__ablation_manifest.json": {
+      "original_path": "outputs/ablations_smoke/ablation_manifest.json",
+      "bytes": 501
+    },
+    "outputs__ablations_smoke__broadcast_baseline__config_snapshot.yaml": {
+      "original_path": "outputs/ablations_smoke/broadcast_baseline/config_snapshot.yaml",
+      "bytes": 1102
+    },
+    "outputs__ablations_smoke__broadcast_baseline__metrics.json": {
+      "original_path": "outputs/ablations_smoke/broadcast_baseline/metrics.json",
+      "bytes": 996
+    },
+    "outputs__ablations_smoke__per_frame_motion__config_snapshot.yaml": {
+      "original_path": "outputs/ablations_smoke/per_frame_motion/config_snapshot.yaml",
+      "bytes": 1097
+    },
+    "outputs__ablations_smoke__per_frame_motion__metrics.json": {
+      "original_path": "outputs/ablations_smoke/per_frame_motion/metrics.json",
+      "bytes": 1215
+    },
+    "outputs__ablations_smoke__table.csv": {
+      "original_path": "outputs/ablations_smoke/table.csv",
+      "bytes": 845
+    },
+    "outputs__ablations_smoke__table.md": {
+      "original_path": "outputs/ablations_smoke/table.md",
+      "bytes": 853
+    },
+    "outputs__ablations_smoke__task_phenotype__config_snapshot.yaml": {
+      "original_path": "outputs/ablations_smoke/task_phenotype/config_snapshot.yaml",
+      "bytes": 1092
+    },
+    "outputs__ablations_smoke__task_phenotype__metrics.json": {
+      "original_path": "outputs/ablations_smoke/task_phenotype/metrics.json",
+      "bytes": 1242
+    },
+    "outputs__ablations_smoke_v2__ablation_manifest.json": {
+      "original_path": "outputs/ablations_smoke_v2/ablation_manifest.json",
+      "bytes": 1026
+    },
+    "outputs__ablations_smoke_v2__broadcast_baseline__config_snapshot.yaml": {
+      "original_path": "outputs/ablations_smoke_v2/broadcast_baseline/config_snapshot.yaml",
+      "bytes": 1105
+    },
+    "outputs__ablations_smoke_v2__broadcast_baseline__metrics.json": {
+      "original_path": "outputs/ablations_smoke_v2/broadcast_baseline/metrics.json",
+      "bytes": 682
+    },
+    "outputs__ablations_smoke_v2__fusion_concat__config_snapshot.yaml": {
+      "original_path": "outputs/ablations_smoke_v2/fusion_concat/config_snapshot.yaml",
+      "bytes": 951
+    },
+    "outputs__ablations_smoke_v2__fusion_concat__metrics.json": {
+      "original_path": "outputs/ablations_smoke_v2/fusion_concat/metrics.json",
+      "bytes": 835
+    },
+    "outputs__ablations_smoke_v2__fusion_heart_ttable__config_snapshot.yaml": {
+      "original_path": "outputs/ablations_smoke_v2/fusion_heart_ttable/config_snapshot.yaml",
+      "bytes": 1043
+    },
+    "outputs__ablations_smoke_v2__fusion_heart_ttable__metrics.json": {
+      "original_path": "outputs/ablations_smoke_v2/fusion_heart_ttable/metrics.json",
+      "bytes": 837
+    },
+    "outputs__ablations_smoke_v2__per_frame_motion__config_snapshot.yaml": {
+      "original_path": "outputs/ablations_smoke_v2/per_frame_motion/config_snapshot.yaml",
+      "bytes": 1100
+    },
+    "outputs__ablations_smoke_v2__per_frame_motion__metrics.json": {
+      "original_path": "outputs/ablations_smoke_v2/per_frame_motion/metrics.json",
+      "bytes": 835
+    },
+    "outputs__ablations_smoke_v2__per_frame_no_motion__config_snapshot.yaml": {
+      "original_path": "outputs/ablations_smoke_v2/per_frame_no_motion/config_snapshot.yaml",
+      "bytes": 1106
+    },
+    "outputs__ablations_smoke_v2__per_frame_no_motion__metrics.json": {
+      "original_path": "outputs/ablations_smoke_v2/per_frame_no_motion/metrics.json",
+      "bytes": 840
+    },
+    "outputs__ablations_smoke_v2__table.csv": {
+      "original_path": "outputs/ablations_smoke_v2/table.csv",
+      "bytes": 1595
+    },
+    "outputs__ablations_smoke_v2__table.md": {
+      "original_path": "outputs/ablations_smoke_v2/table.md",
+      "bytes": 1346
+    },
+    "outputs__ablations_smoke_v2__task_phenotype__config_snapshot.yaml": {
+      "original_path": "outputs/ablations_smoke_v2/task_phenotype/config_snapshot.yaml",
+      "bytes": 1095
+    },
+    "outputs__ablations_smoke_v2__task_phenotype__metrics.json": {
+      "original_path": "outputs/ablations_smoke_v2/task_phenotype/metrics.json",
+      "bytes": 887
+    },
+    "outputs__config_snapshot.yaml": {
+      "original_path": "outputs/config_snapshot.yaml",
+      "bytes": 1134
+    },
+    "outputs__metrics.json": {
+      "original_path": "outputs/metrics.json",
+      "bytes": 1893
+    },
+    "outputs__paper_acdc_smoke__config_snapshot.yaml": {
+      "original_path": "outputs/paper_acdc_smoke/config_snapshot.yaml",
+      "bytes": 1073
+    },
+    "outputs__paper_acdc_smoke__metrics.json": {
+      "original_path": "outputs/paper_acdc_smoke/metrics.json",
+      "bytes": 933
+    },
+    "outputs__paper_recon_smoke__config_snapshot.yaml": {
+      "original_path": "outputs/paper_recon_smoke/config_snapshot.yaml",
+      "bytes": 1077
+    },
+    "outputs__paper_recon_smoke__metrics.json": {
+      "original_path": "outputs/paper_recon_smoke/metrics.json",
+      "bytes": 828
+    },
+    "outputs__post_fix_smoke__config_snapshot.yaml": {
+      "original_path": "outputs/post_fix_smoke/config_snapshot.yaml",
+      "bytes": 980
+    },
+    "outputs__post_fix_smoke__metrics.json": {
+      "original_path": "outputs/post_fix_smoke/metrics.json",
+      "bytes": 1306
+    },
+    "outputs__post_volsmooth_smoke__config_snapshot.yaml": {
+      "original_path": "outputs/post_volsmooth_smoke/config_snapshot.yaml",
+      "bytes": 986
+    },
+    "outputs__post_volsmooth_smoke__metrics.json": {
+      "original_path": "outputs/post_volsmooth_smoke/metrics.json",
+      "bytes": 1312
+    }
+  }
+}

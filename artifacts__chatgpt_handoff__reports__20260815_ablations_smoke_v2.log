@@ -1,0 +1,372 @@
++ E:\Miniconda3\python.exe E:\Projects\20260523-ReconSeg3D-cardiac-rec\scripts\prepare_demo_data.py
+keep existing ACDC -> E:\Projects\20260523-ReconSeg3D-cardiac-rec\data\acdc (8 patients)
+keep existing MM-WHS -> E:\Projects\20260523-ReconSeg3D-cardiac-rec\data\mmwhs (4 cases)
+keep existing EMIDEC -> E:\Projects\20260523-ReconSeg3D-cardiac-rec\data\emidec (4 cases)
++ E:\Miniconda3\python.exe E:\Projects\20260523-ReconSeg3D-cardiac-rec\scripts\train.py --config E:\Projects\20260523-ReconSeg3D-cardiac-rec\configs\ablations\broadcast_baseline.yaml --epochs 1 --output-dir outputs\ablations_smoke_v2\broadcast_baseline
+
+train:   0%|          | 0/8 [00:00<?, ?it/s]
+train:  12%|█▎        | 1/8 [00:00<00:04,  1.42it/s]
+train:  25%|██▌       | 2/8 [00:01<00:03,  1.71it/s]
+train:  38%|███▊      | 3/8 [00:06<00:13,  2.76s/it]
+train:  50%|█████     | 4/8 [00:07<00:07,  1.86s/it]
+train:  62%|██████▎   | 5/8 [00:07<00:04,  1.36s/it]
+train:  75%|███████▌  | 6/8 [00:08<00:02,  1.08s/it]
+train:  88%|████████▊ | 7/8 [00:08<00:00,  1.14it/s]
+train: 100%|██████████| 8/8 [00:08<00:00,  1.36it/s]
+                                                    
+
+val:   0%|          | 0/4 [00:00<?, ?it/s]
+val:  25%|██▌       | 1/4 [00:00<00:00,  4.23it/s]
+val:  50%|█████     | 2/4 [00:00<00:00,  4.59it/s]
+val:  75%|███████▌  | 3/4 [00:00<00:00,  4.78it/s]
+val: 100%|██████████| 4/4 [00:00<00:00,  5.15it/s]
+                                                  
+2026-08-15 22:16:15,476 INFO epoch 1/1 run=broadcast_baseline train_loss=2.7572 val_loss=2.3740 val_auc=0.625 pheno_acc=None
+2026-08-15 22:16:15,477 INFO   train_loss_seg=2.0271 val_loss_seg=1.7490628063678741
+2026-08-15 22:16:15,477 INFO   train_loss_recon=0.9741 val_loss_recon=1.0338867008686066
+2026-08-15 22:16:15,477 INFO   train_loss_recon_mse=0.9741 val_loss_recon_mse=1.0338867008686066
+2026-08-15 22:16:15,477 INFO   train_loss_mace=0.9049 val_loss_mace=0.6864113956689835
+2026-08-15 22:16:15,477 INFO   train_loss_warp=0.0000 val_loss_warp=0.0
+2026-08-15 22:16:15,477 INFO   train_loss_cycle=0.0000 val_loss_cycle=0.0
+2026-08-15 22:16:15,477 INFO   train_loss_volsmooth=0.0000 val_loss_volsmooth=0.0
+2026-08-15 22:16:15,477 INFO   train_loss_segsmooth=0.0000 val_loss_segsmooth=0.0
+2026-08-15 22:16:15,477 INFO   train_loss_seg2d=2.0319 val_loss_seg2d=1.7496817708015442
+2026-08-15 22:16:15,478 INFO   train_loss_cox=0.0000 val_loss_cox=0.0
+2026-08-15 22:16:15,478 INFO   train_loss_phenotype=0.0000 val_loss_phenotype=0.0
+Training done. {'loss_total': 2.3739906549453735, 'mace_auc': 0.625, 'c_index': 0.5555555555555556, 'dice_mean': 0.15342187901669935, 'recon_psnr': 19.065255387224184}
++ E:\Miniconda3\python.exe E:\Projects\20260523-ReconSeg3D-cardiac-rec\scripts\eval.py --config E:\Projects\20260523-ReconSeg3D-cardiac-rec\configs\ablations\broadcast_baseline.yaml --checkpoint outputs\ablations_smoke_v2\broadcast_baseline\last.pt --metrics-out outputs\ablations_smoke_v2\broadcast_baseline\metrics.json
+INFO:root:wrote outputs\ablations_smoke_v2\broadcast_baseline\metrics.json
+{
+  "run_name": "broadcast_baseline",
+  "split": "val",
+  "n_batches": 4,
+  "dice_class_0": 0.9727468290653422,
+  "dice_class_1": 0.3131549413679872,
+  "dice_lv": 0.3131549413679872,
+  "dice_class_2": 6.094124030373677e-09,
+  "dice_rv": 6.094124030373677e-09,
+  "dice_class_3": 0.19344258333878944,
+  "dice_myo": 0.19344258333878944,
+  "dice_mean": 0.16886584360030021,
+  "iou_foreground": 0.09841491329588313,
+  "recon_mae": 0.6924627125263214,
+  "recon_psnr": 19.068921521774055,
+  "recon_ssim": 0.012798061361536384,
+  "mace_auc": 0.5,
+  "mace_sensitivity": 0.7499999937500001,
+  "mace_specificity": 0.0,
+  "mace_accuracy": 0.5,
+  "c_index": 0.5
+}
++ E:\Miniconda3\python.exe E:\Projects\20260523-ReconSeg3D-cardiac-rec\scripts\train.py --config E:\Projects\20260523-ReconSeg3D-cardiac-rec\configs\ablations\per_frame_no_motion.yaml --epochs 1 --output-dir outputs\ablations_smoke_v2\per_frame_no_motion
+
+train:   0%|          | 0/8 [00:00<?, ?it/s]
+train:  12%|█▎        | 1/8 [00:00<00:06,  1.11it/s]
+train:  25%|██▌       | 2/8 [00:01<00:05,  1.18it/s]
+train:  38%|███▊      | 3/8 [00:07<00:14,  2.90s/it]
+train:  50%|█████     | 4/8 [00:07<00:08,  2.07s/it]
+train:  62%|██████▎   | 5/8 [00:08<00:04,  1.61s/it]
+train:  75%|███████▌  | 6/8 [00:09<00:02,  1.34s/it]
+train:  88%|████████▊ | 7/8 [00:10<00:01,  1.18s/it]
+train: 100%|██████████| 8/8 [00:11<00:00,  1.06s/it]
+                                                    
+
+val:   0%|          | 0/4 [00:00<?, ?it/s]
+val:  25%|██▌       | 1/4 [00:00<00:01,  2.14it/s]
+val:  50%|█████     | 2/4 [00:00<00:00,  2.28it/s]
+val:  75%|███████▌  | 3/4 [00:01<00:00,  2.28it/s]
+val: 100%|██████████| 4/4 [00:01<00:00,  2.16it/s]
+                                                  
+2026-08-15 22:16:59,135 INFO epoch 1/1 run=per_frame_no_motion train_loss=2.7354 val_loss=2.4347 val_auc=0.625 pheno_acc=None
+2026-08-15 22:16:59,136 INFO   train_loss_seg=1.9982 val_loss_seg=1.7995053231716156
+2026-08-15 22:16:59,136 INFO   train_loss_recon=0.9589 val_loss_recon=1.0166974663734436
+2026-08-15 22:16:59,136 INFO   train_loss_recon_mse=0.9589 val_loss_recon_mse=1.0166974663734436
+2026-08-15 22:16:59,136 INFO   train_loss_mace=0.9618 val_loss_mace=0.6920210421085358
+2026-08-15 22:16:59,136 INFO   train_loss_warp=0.0000 val_loss_warp=0.0
+2026-08-15 22:16:59,136 INFO   train_loss_cycle=0.0000 val_loss_cycle=0.0
+2026-08-15 22:16:59,136 INFO   train_loss_volsmooth=0.0000 val_loss_volsmooth=4.685613035348979e-07
+2026-08-15 22:16:59,136 INFO   train_loss_segsmooth=0.0036 val_loss_segsmooth=0.002515080093871802
+2026-08-15 22:16:59,137 INFO   train_loss_seg2d=2.0040 val_loss_seg2d=1.8024488985538483
+2026-08-15 22:16:59,137 INFO   train_loss_cox=0.0000 val_loss_cox=0.0
+2026-08-15 22:16:59,137 INFO   train_loss_phenotype=0.0000 val_loss_phenotype=0.0
+Training done. {'loss_total': 2.434720516204834, 'mace_auc': 0.625, 'c_index': 0.5555555555555556, 'dice_mean': 0.16436956387608914, 'recon_psnr': 19.13805679999765}
++ E:\Miniconda3\python.exe E:\Projects\20260523-ReconSeg3D-cardiac-rec\scripts\eval.py --config E:\Projects\20260523-ReconSeg3D-cardiac-rec\configs\ablations\per_frame_no_motion.yaml --checkpoint outputs\ablations_smoke_v2\per_frame_no_motion\last.pt --metrics-out outputs\ablations_smoke_v2\per_frame_no_motion\metrics.json
+INFO:root:wrote outputs\ablations_smoke_v2\per_frame_no_motion\metrics.json
+{
+  "run_name": "per_frame_no_motion",
+  "split": "val",
+  "n_batches": 4,
+  "dice_class_0": 0.9273554973381047,
+  "dice_class_1": 0.030014776322582894,
+  "dice_lv": 0.030014776322582894,
+  "dice_class_2": 6.094124030373677e-09,
+  "dice_rv": 6.094124030373677e-09,
+  "dice_class_3": 0.4278803569240952,
+  "dice_myo": 0.4278803569240952,
+  "dice_mean": 0.15263171311360071,
+  "iou_foreground": 0.09660902106362702,
+  "recon_mae": 0.6917182356119156,
+  "recon_psnr": 19.12745473040439,
+  "recon_ssim": 0.014627513475716114,
+  "mace_auc": 0.5,
+  "mace_sensitivity": 0.7499999937500001,
+  "mace_specificity": 0.0,
+  "mace_accuracy": 0.5,
+  "c_index": 0.5,
+  "ef_proxy": 0.09775645658373833,
+  "vol_curve": 5.448519289075193e-07,
+  "warp_error": 0.0007944452227093279,
+  "cycle_error": 2.377216157256612e-08
+}
++ E:\Miniconda3\python.exe E:\Projects\20260523-ReconSeg3D-cardiac-rec\scripts\train.py --config E:\Projects\20260523-ReconSeg3D-cardiac-rec\configs\ablations\per_frame_motion.yaml --epochs 1 --output-dir outputs\ablations_smoke_v2\per_frame_motion
+
+train:   0%|          | 0/8 [00:00<?, ?it/s]
+train:  12%|█▎        | 1/8 [00:01<00:09,  1.35s/it]
+train:  25%|██▌       | 2/8 [00:02<00:07,  1.33s/it]
+train:  38%|███▊      | 3/8 [00:13<00:28,  5.77s/it]
+train:  50%|█████     | 4/8 [00:14<00:15,  3.98s/it]
+train:  62%|██████▎   | 5/8 [00:16<00:09,  3.02s/it]
+train:  75%|███████▌  | 6/8 [00:17<00:04,  2.45s/it]
+train:  88%|████████▊ | 7/8 [00:18<00:02,  2.07s/it]
+train: 100%|██████████| 8/8 [00:20<00:00,  1.81s/it]
+                                                    
+
+val:   0%|          | 0/4 [00:00<?, ?it/s]
+val:  25%|██▌       | 1/4 [00:00<00:01,  2.23it/s]
+val:  50%|█████     | 2/4 [00:01<00:01,  1.94it/s]
+val:  75%|███████▌  | 3/4 [00:01<00:00,  2.02it/s]
+val: 100%|██████████| 4/4 [00:01<00:00,  2.10it/s]
+                                                  
+2026-08-15 22:17:51,262 INFO epoch 1/1 run=per_frame_motion train_loss=2.7500 val_loss=2.4937 val_auc=0.625 pheno_acc=None
+2026-08-15 22:17:51,262 INFO   train_loss_seg=2.0004 val_loss_seg=1.848699301481247
+2026-08-15 22:17:51,263 INFO   train_loss_recon=0.9852 val_loss_recon=1.0145642757415771
+2026-08-15 22:17:51,263 INFO   train_loss_recon_mse=0.9852 val_loss_recon_mse=1.0145642757415771
+2026-08-15 22:17:51,263 INFO   train_loss_mace=0.9686 val_loss_mace=0.6931060552597046
+2026-08-15 22:17:51,263 INFO   train_loss_warp=0.0226 val_loss_warp=0.001115262130042538
+2026-08-15 22:17:51,263 INFO   train_loss_cycle=0.0268 val_loss_cycle=0.00031892477272776887
+2026-08-15 22:17:51,263 INFO   train_loss_volsmooth=0.0000 val_loss_volsmooth=3.4411342753060126e-07
+2026-08-15 22:17:51,263 INFO   train_loss_segsmooth=0.0035 val_loss_segsmooth=0.003128264914266765
+2026-08-15 22:17:51,263 INFO   train_loss_seg2d=2.0199 val_loss_seg2d=1.8500992357730865
+2026-08-15 22:17:51,264 INFO   train_loss_cox=0.0000 val_loss_cox=0.0
+2026-08-15 22:17:51,264 INFO   train_loss_phenotype=0.0000 val_loss_phenotype=0.0
+Training done. {'loss_total': 2.4936580657958984, 'mace_auc': 0.625, 'c_index': 0.5555555555555556, 'dice_mean': 0.15780590400667088, 'recon_psnr': 19.147200859920385}
++ E:\Miniconda3\python.exe E:\Projects\20260523-ReconSeg3D-cardiac-rec\scripts\eval.py --config E:\Projects\20260523-ReconSeg3D-cardiac-rec\configs\ablations\per_frame_motion.yaml --checkpoint outputs\ablations_smoke_v2\per_frame_motion\last.pt --metrics-out outputs\ablations_smoke_v2\per_frame_motion\metrics.json
+INFO:root:wrote outputs\ablations_smoke_v2\per_frame_motion\metrics.json
+{
+  "run_name": "per_frame_motion",
+  "split": "val",
+  "n_batches": 4,
+  "dice_class_0": 0.9186371349532042,
+  "dice_class_1": 0.026195018809420878,
+  "dice_lv": 0.026195018809420878,
+  "dice_class_2": 6.094124030373677e-09,
+  "dice_rv": 6.094124030373677e-09,
+  "dice_class_3": 0.47747911516739444,
+  "dice_myo": 0.47747911516739444,
+  "dice_mean": 0.16789138002364648,
+  "iou_foreground": 0.10916635186325542,
+  "recon_mae": 0.6950179785490036,
+  "recon_psnr": 19.146340873347405,
+  "recon_ssim": 0.014910198282450438,
+  "mace_auc": 0.5,
+  "mace_sensitivity": 0.7499999937500001,
+  "mace_specificity": 0.0,
+  "mace_accuracy": 0.5,
+  "c_index": 0.5,
+  "ef_proxy": 0.06260785926133394,
+  "vol_curve": 2.6366668137711713e-07,
+  "warp_error": 0.0010409044625703245,
+  "cycle_error": 0.00031686684815213084
+}
++ E:\Miniconda3\python.exe E:\Projects\20260523-ReconSeg3D-cardiac-rec\scripts\train.py --config E:\Projects\20260523-ReconSeg3D-cardiac-rec\configs\ablations\fusion_concat.yaml --epochs 1 --output-dir outputs\ablations_smoke_v2\fusion_concat
+
+train:   0%|          | 0/8 [00:00<?, ?it/s]
+train:  12%|█▎        | 1/8 [00:00<00:06,  1.04it/s]
+train:  25%|██▌       | 2/8 [00:01<00:05,  1.14it/s]
+train:  38%|███▊      | 3/8 [00:07<00:14,  2.90s/it]
+train:  50%|█████     | 4/8 [00:08<00:08,  2.17s/it]
+train:  62%|██████▎   | 5/8 [00:09<00:05,  1.77s/it]
+train:  75%|███████▌  | 6/8 [00:10<00:03,  1.53s/it]
+train:  88%|████████▊ | 7/8 [00:11<00:01,  1.38s/it]
+train: 100%|██████████| 8/8 [00:12<00:00,  1.28s/it]
+                                                    
+
+val:   0%|          | 0/4 [00:00<?, ?it/s]
+val:  25%|██▌       | 1/4 [00:00<00:00,  3.30it/s]
+val:  50%|█████     | 2/4 [00:00<00:00,  3.30it/s]
+val:  75%|███████▌  | 3/4 [00:00<00:00,  3.38it/s]
+val: 100%|██████████| 4/4 [00:01<00:00,  3.26it/s]
+                                                  
+2026-08-15 22:18:29,915 INFO epoch 1/1 run=fusion_concat train_loss=3.1950 val_loss=2.6257 val_auc=0.625 pheno_acc=None
+2026-08-15 22:18:29,915 INFO   train_loss_seg=1.9721 val_loss_seg=1.6676076650619507
+2026-08-15 22:18:29,915 INFO   train_loss_recon=0.6768 val_loss_recon=0.6921516954898834
+2026-08-15 22:18:29,915 INFO   train_loss_recon_mse=0.9494 val_loss_recon_mse=1.0273554921150208
+2026-08-15 22:18:29,915 INFO   train_loss_mace=0.9519 val_loss_mace=0.6822207123041153
+2026-08-15 22:18:29,915 INFO   train_loss_warp=0.0339 val_loss_warp=0.0004995577983208932
+2026-08-15 22:18:29,916 INFO   train_loss_cycle=0.0346 val_loss_cycle=0.00010762526108010206
+2026-08-15 22:18:29,916 INFO   train_loss_volsmooth=0.0000 val_loss_volsmooth=2.460827204231464e-07
+2026-08-15 22:18:29,916 INFO   train_loss_segsmooth=0.0000 val_loss_segsmooth=0.0
+2026-08-15 22:18:29,916 INFO   train_loss_seg2d=0.0000 val_loss_seg2d=0.0
+2026-08-15 22:18:29,916 INFO   train_loss_cox=0.0000 val_loss_cox=0.0
+2026-08-15 22:18:29,916 INFO   train_loss_phenotype=0.0000 val_loss_phenotype=0.0
+Training done. {'loss_total': 2.6256625056266785, 'mace_auc': 0.625, 'c_index': 0.5555555555555556, 'dice_mean': 0.13943603396280063, 'recon_psnr': 19.09274864945744}
++ E:\Miniconda3\python.exe E:\Projects\20260523-ReconSeg3D-cardiac-rec\scripts\eval.py --config E:\Projects\20260523-ReconSeg3D-cardiac-rec\configs\ablations\fusion_concat.yaml --checkpoint outputs\ablations_smoke_v2\fusion_concat\last.pt --metrics-out outputs\ablations_smoke_v2\fusion_concat\metrics.json
+INFO:root:wrote outputs\ablations_smoke_v2\fusion_concat\metrics.json
+{
+  "run_name": "fusion_concat",
+  "split": "val",
+  "n_batches": 4,
+  "dice_class_0": 0.9832689914116924,
+  "dice_class_1": 0.18346494564105936,
+  "dice_lv": 0.18346494564105936,
+  "dice_class_2": 6.094124030373677e-09,
+  "dice_rv": 6.094124030373677e-09,
+  "dice_class_3": 0.23484315015321847,
+  "dice_myo": 0.23484315015321847,
+  "dice_mean": 0.13943603396280063,
+  "iou_foreground": 0.07812459861376099,
+  "recon_mae": 0.6921516954898834,
+  "recon_psnr": 19.09274864945744,
+  "recon_ssim": 0.013572678668424487,
+  "mace_auc": 0.5,
+  "mace_sensitivity": 0.7499999937500001,
+  "mace_specificity": 0.0,
+  "mace_accuracy": 0.5,
+  "c_index": 0.5,
+  "ef_proxy": 0.14572600275278091,
+  "vol_curve": 2.460827204231464e-07,
+  "warp_error": 0.0004995577983208932,
+  "cycle_error": 0.00010762526108010206
+}
++ E:\Miniconda3\python.exe E:\Projects\20260523-ReconSeg3D-cardiac-rec\scripts\train.py --config E:\Projects\20260523-ReconSeg3D-cardiac-rec\configs\ablations\fusion_heart_ttable.yaml --epochs 1 --output-dir outputs\ablations_smoke_v2\fusion_heart_ttable
+
+train:   0%|          | 0/8 [00:00<?, ?it/s]
+train:  12%|█▎        | 1/8 [00:01<00:09,  1.32s/it]
+train:  25%|██▌       | 2/8 [00:02<00:07,  1.23s/it]
+train:  38%|███▊      | 3/8 [00:07<00:15,  3.12s/it]
+train:  50%|█████     | 4/8 [00:08<00:09,  2.32s/it]
+train:  62%|██████▎   | 5/8 [00:10<00:05,  1.89s/it]
+train:  75%|███████▌  | 6/8 [00:11<00:03,  1.62s/it]
+train:  88%|████████▊ | 7/8 [00:12<00:01,  1.44s/it]
+train: 100%|██████████| 8/8 [00:13<00:00,  1.36s/it]
+                                                    
+
+val:   0%|          | 0/4 [00:00<?, ?it/s]
+val:  25%|██▌       | 1/4 [00:00<00:00,  3.42it/s]
+val:  50%|█████     | 2/4 [00:00<00:00,  3.25it/s]
+val:  75%|███████▌  | 3/4 [00:00<00:00,  3.35it/s]
+val: 100%|██████████| 4/4 [00:01<00:00,  3.23it/s]
+                                                  
+2026-08-15 22:19:09,417 INFO epoch 1/1 run=fusion_heart_ttable train_loss=2.9106 val_loss=2.8753 val_auc=0.0 pheno_acc=None
+2026-08-15 22:19:09,417 INFO   train_loss_seg=1.9607 val_loss_seg=1.8463164269924164
+2026-08-15 22:19:09,417 INFO   train_loss_recon=0.6503 val_loss_recon=0.6894948333501816
+2026-08-15 22:19:09,418 INFO   train_loss_recon_mse=0.8853 val_loss_recon_mse=0.9884543120861053
+2026-08-15 22:19:09,418 INFO   train_loss_mace=0.6935 val_loss_mace=0.7575172558426857
+2026-08-15 22:19:09,418 INFO   train_loss_warp=0.0278 val_loss_warp=0.0012618887994904071
+2026-08-15 22:19:09,418 INFO   train_loss_cycle=0.0248 val_loss_cycle=0.0007589067390654236
+2026-08-15 22:19:09,418 INFO   train_loss_volsmooth=0.0000 val_loss_volsmooth=2.496455238087947e-07
+2026-08-15 22:19:09,418 INFO   train_loss_segsmooth=0.0000 val_loss_segsmooth=0.0
+2026-08-15 22:19:09,418 INFO   train_loss_seg2d=0.0000 val_loss_seg2d=0.0
+2026-08-15 22:19:09,418 INFO   train_loss_cox=0.0000 val_loss_cox=0.0
+2026-08-15 22:19:09,419 INFO   train_loss_phenotype=0.0000 val_loss_phenotype=0.0
+Training done. {'loss_total': 2.875255048274994, 'mace_auc': 0.0, 'c_index': 0.16666666666666666, 'dice_mean': 0.1890195223044302, 'recon_psnr': 19.260390330916948}
++ E:\Miniconda3\python.exe E:\Projects\20260523-ReconSeg3D-cardiac-rec\scripts\eval.py --config E:\Projects\20260523-ReconSeg3D-cardiac-rec\configs\ablations\fusion_heart_ttable.yaml --checkpoint outputs\ablations_smoke_v2\fusion_heart_ttable\last.pt --metrics-out outputs\ablations_smoke_v2\fusion_heart_ttable\metrics.json
+INFO:root:wrote outputs\ablations_smoke_v2\fusion_heart_ttable\metrics.json
+{
+  "run_name": "fusion_heart_ttable",
+  "split": "val",
+  "n_batches": 4,
+  "dice_class_0": 0.89608801474202,
+  "dice_class_1": 2.968397522211874e-10,
+  "dice_lv": 2.968397522211874e-10,
+  "dice_class_2": 6.094124030373677e-09,
+  "dice_rv": 6.094124030373677e-09,
+  "dice_class_3": 0.5670585605223268,
+  "dice_myo": 0.5670585605223268,
+  "dice_mean": 0.1890195223044302,
+  "iou_foreground": 0.1319147772741043,
+  "recon_mae": 0.6894948333501816,
+  "recon_psnr": 19.260390330916948,
+  "recon_ssim": 0.018391549587249756,
+  "mace_auc": 0.0,
+  "mace_sensitivity": 0.7499999937500001,
+  "mace_specificity": 0.0,
+  "mace_accuracy": 0.5,
+  "c_index": 0.0,
+  "ef_proxy": 0.0675814338028431,
+  "vol_curve": 2.496455238087947e-07,
+  "warp_error": 0.0012618887994904071,
+  "cycle_error": 0.0007589067390654236
+}
++ E:\Miniconda3\python.exe E:\Projects\20260523-ReconSeg3D-cardiac-rec\scripts\train.py --config E:\Projects\20260523-ReconSeg3D-cardiac-rec\configs\ablations\task_phenotype.yaml --epochs 1 --output-dir outputs\ablations_smoke_v2\task_phenotype
+
+train:   0%|          | 0/3 [00:00<?, ?it/s]
+train:  33%|███▎      | 1/3 [00:01<00:02,  1.44s/it]
+train:  67%|██████▋   | 2/3 [00:02<00:01,  1.29s/it]
+train: 100%|██████████| 3/3 [00:07<00:00,  3.03s/it]
+                                                    
+
+val:   0%|          | 0/1 [00:00<?, ?it/s]
+val: 100%|██████████| 1/1 [00:00<00:00,  1.05it/s]
+                                                  
+2026-08-15 22:19:42,503 INFO epoch 1/1 run=task_phenotype train_loss=4.1564 val_loss=4.2353 val_auc=0.0 pheno_acc=0.0
+2026-08-15 22:19:42,503 INFO   train_loss_seg=2.1604 val_loss_seg=2.174807548522949
+2026-08-15 22:19:42,503 INFO   train_loss_recon=0.7224 val_loss_recon=0.6945556402206421
+2026-08-15 22:19:42,503 INFO   train_loss_recon_mse=1.0980 val_loss_recon_mse=1.0598340034484863
+2026-08-15 22:19:42,503 INFO   train_loss_mace=0.7213 val_loss_mace=0.6935595273971558
+2026-08-15 22:19:42,504 INFO   train_loss_warp=0.0655 val_loss_warp=8.411749149672687e-05
+2026-08-15 22:19:42,504 INFO   train_loss_cycle=0.0232 val_loss_cycle=6.831057544331998e-05
+2026-08-15 22:19:42,504 INFO   train_loss_volsmooth=0.0000 val_loss_volsmooth=1.5579160184131524e-09
+2026-08-15 22:19:42,504 INFO   train_loss_segsmooth=0.0000 val_loss_segsmooth=0.0
+2026-08-15 22:19:42,504 INFO   train_loss_seg2d=0.0000 val_loss_seg2d=0.0
+2026-08-15 22:19:42,504 INFO   train_loss_cox=0.0000 val_loss_cox=0.0
+2026-08-15 22:19:42,505 INFO   train_loss_phenotype=1.6967 val_loss_phenotype=1.7808315753936768
+Training done. {'loss_total': 4.235276699066162, 'mace_auc': 0.0, 'c_index': 0.0, 'phenotype_acc': 0.0, 'dice_mean': 0.017562682421363874, 'recon_psnr': 17.39001836328856}
++ E:\Miniconda3\python.exe E:\Projects\20260523-ReconSeg3D-cardiac-rec\scripts\eval.py --config E:\Projects\20260523-ReconSeg3D-cardiac-rec\configs\ablations\task_phenotype.yaml --checkpoint outputs\ablations_smoke_v2\task_phenotype\last.pt --metrics-out outputs\ablations_smoke_v2\task_phenotype\metrics.json
+INFO:root:wrote outputs\ablations_smoke_v2\task_phenotype\metrics.json
+{
+  "run_name": "task_phenotype",
+  "split": "val",
+  "n_batches": 1,
+  "dice_class_0": 0.006457254355066346,
+  "dice_class_1": 0.05268804389519943,
+  "dice_lv": 0.05268804389519943,
+  "dice_class_2": 2.8409090828383262e-09,
+  "dice_rv": 2.8409090828383262e-09,
+  "dice_class_3": 5.279831042618885e-10,
+  "dice_myo": 5.279831042618885e-10,
+  "dice_mean": 0.017562682421363874,
+  "iou_foreground": 0.009018936816860399,
+  "recon_mae": 0.6945556402206421,
+  "recon_psnr": 17.39001836328856,
+  "recon_ssim": 0.004403001628816128,
+  "mace_auc": 0.0,
+  "mace_sensitivity": 0.9999999900000002,
+  "mace_specificity": 0.0,
+  "mace_accuracy": 0.5,
+  "c_index": 0.0,
+  "phenotype_acc": 0.0,
+  "phenotype_auc": 1.0,
+  "ef_proxy": 0.0007648066384717822,
+  "vol_curve": 1.5579160184131524e-09,
+  "warp_error": 8.411749149672687e-05,
+  "cycle_error": 6.831057544331998e-05
+}
+wrote outputs\ablations_smoke_v2\ablation_manifest.json
++ E:\Miniconda3\python.exe E:\Projects\20260523-ReconSeg3D-cardiac-rec\scripts\summarize_runs.py --runs-root outputs\ablations_smoke_v2 --out-md outputs\ablations_smoke_v2\table.md --out-csv outputs\ablations_smoke_v2\table.csv
+# Ablation summary (demo / public proxies)
+
+Not private AMI MACE. Empty cells mean the metric was not logged for that run.
+Demo / smoke numbers are pipeline checks only — do not cite as clinical performance.
+
+| run | recon_psnr | recon_ssim | recon_mae | dice_lv | dice_rv | dice_myo | dice_mean | warp_error | cycle_error | ef_proxy | phenotype_acc | phenotype_auc | mace_auc | c_index | loss_total |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| broadcast_baseline | 19.0689 | 0.0128 | 0.6925 | 0.3132 | 0.0000 | 0.1934 | 0.1689 |  |  |  |  |  | 0.5000 | 0.5000 |  |
+| fusion_concat | 19.0927 | 0.0136 | 0.6922 | 0.1835 | 0.0000 | 0.2348 | 0.1394 | 0.0005 | 0.0001 | 0.1457 |  |  | 0.5000 | 0.5000 |  |
+| fusion_heart_ttable | 19.2604 | 0.0184 | 0.6895 | 0.0000 | 0.0000 | 0.5671 | 0.1890 | 0.0013 | 0.0008 | 0.0676 |  |  | 0.0000 | 0.0000 |  |
+| per_frame_motion | 19.1463 | 0.0149 | 0.6950 | 0.0262 | 0.0000 | 0.4775 | 0.1679 | 0.0010 | 0.0003 | 0.0626 |  |  | 0.5000 | 0.5000 |  |
+| per_frame_no_motion | 19.1275 | 0.0146 | 0.6917 | 0.0300 | 0.0000 | 0.4279 | 0.1526 | 0.0008 | 0.0000 | 0.0978 |  |  | 0.5000 | 0.5000 |  |
+| task_phenotype | 17.3900 | 0.0044 | 0.6946 | 0.0527 | 0.0000 | 0.0000 | 0.0176 | 0.0001 | 0.0001 | 0.0008 | 0.0000 | 1.0000 | 0.0000 | 0.0000 |  |
+
+wrote outputs\ablations_smoke_v2\table.md
+wrote outputs\ablations_smoke_v2\table.csv

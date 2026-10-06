@@ -1,0 +1,73 @@
+# Smoke / CI geometry checks — synthetic allowed.
+# Do NOT use for publication subject tables.
+
+seed: 42
+deterministic: true
+device: auto
+output_dir: outputs/smoke_motion
+run_name: smoke_motion
+
+data:
+  source: synthetic
+  allow_fake_data: true
+  auto_fake: true
+  in_channels: 1
+  num_frames: 8
+  spatial_size: [16, 32, 32]
+  batch_size: 2
+  num_workers: 0
+  train_samples: 16
+  val_samples: 8
+  clinical_dim: 0
+  slice_sampling: false
+
+model:
+  arch: reconseg3d
+  in_channels: 1
+  num_seg_classes: 4
+  base_channels: 16
+  temporal_mode: temporal_conv
+  clinical_dim: 0
+  dropout: 0.2
+  per_frame_recon: true
+  predict_motion: true
+  per_frame_seg: true
+  fusion: concat
+  task: motion
+  use_svf: false
+
+loss:
+  w_seg: 0.0
+  w_recon: 0.25
+  w_mace: 0.0
+  w_cox: 0.0
+  recon_loss: l1
+  use_dice: true
+  alpha1: 0.1
+  alpha2: 1.0
+  alpha3: 0.0
+  w_warp: 0.05
+  w_cycle: 0.02
+  w_inv: 0.15
+  w_smooth: 0.1
+  w_jac: 0.1
+  jac_eps: 0.0
+  w_loop: 0.1
+  w_ed_ref: 0.1
+  w_volsmooth: 0.01
+  w_segsmooth: 0.0
+
+metrics:
+  hd95: true
+
+selection:
+  metric: prop_ed2es_dice_mean
+  mode: max
+
+train:
+  epochs: 2
+  lr: 0.001
+  weight_decay: 0.0001
+  grad_clip: 1.0
+  amp: false
+  early_stop_patience: 0

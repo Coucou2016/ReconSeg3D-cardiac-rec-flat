@@ -1,0 +1,22 @@
+{
+  "run_name": "broadcast_baseline",
+  "split": "val",
+  "n_batches": 4,
+  "dice_class_0": 0.9686244017649612,
+  "dice_class_1": 0.22657566483180172,
+  "dice_lv": 0.22657566483180172,
+  "dice_class_2": 6.094124030373677e-09,
+  "dice_rv": 6.094124030373677e-09,
+  "dice_class_3": 0.27789104840475565,
+  "dice_myo": 0.27789104840475565,
+  "dice_mean": 0.16815557311022714,
+  "iou_foreground": 0.09852485900013604,
+  "recon_mae": 0.6925934851169586,
+  "recon_psnr": 19.07510102724119,
+  "recon_ssim": 0.01298753428272903,
+  "mace_auc": 0.625,
+  "mace_sensitivity": 0.9999999975,
+  "mace_specificity": 0.0,
+  "mace_accuracy": 0.5,
+  "c_index": 0.5555555555555556
+}

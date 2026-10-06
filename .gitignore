@@ -1,0 +1,27 @@
+# Large / generated / private
+/data/
+outputs/
+predictions/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.pt
+*.pth
+*.ckpt
+.env
+.env.*
+*.secret
+credentials.json
+
+# Local IDE
+.idea/
+.vscode/
+*.swp
+
+# ChatGPT handoff ZIPs (large); keep reports/
+artifacts/chatgpt_handoff/*.zip
+artifacts/chatgpt_handoff/reconseg3d_src_nogit_*.zip
+
+# Optional bulky PDF regenerations can stay tracked under artifacts/

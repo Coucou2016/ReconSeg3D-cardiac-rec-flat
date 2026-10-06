@@ -1,0 +1,251 @@
+SOURCE CODE DROP — drop2_train_model.txt — ACK then wait for more drops before proposing patches. Do not invent missing lines.
+
+===== BEGIN FILE: scripts/train.py =====
+#!/usr/bin/env python
+"""Train ReconSeg3D."""
+
+from __future__ import annotations
+
+import argparse
+import logging
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from reconseg3d.training.trainer import Trainer
+from reconseg3d.utils.config import load_config
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Train ReconSeg3D")
+    parser.add_argument("--config", type=str, default=str(ROOT / "configs" / "default.yaml"))
+    parser.add_argument("--epochs", type=int, default=None)
+    parser.add_argument("--output-dir", type=str, default=None)
+    args = parser.parse_args()
+
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    cfg = load_config(args.config)
+    if args.epochs is not None:
+        cfg.setdefault("train", {})["epochs"] = args.epochs
+    if args.output_dir is not None:
+        cfg["output_dir"] = args.output_dir
+
+    trainer = Trainer(cfg)
+    history = trainer.fit()
+    keys = ("loss_total", "mace_auc", "c_index", "phenotype_acc", "dice_mean", "recon_psnr")
+    summary = {k: history.get(k) for k in keys if k in history}
+    print(f"Training done. {summary}")
+
+
+if __name__ == "__main__":
+    main()
+
+===== END FILE: scripts/train.py =====
+
+===== BEGIN FILE: reconseg3d/models/reconseg3d.py =====
+"""ReconSeg3D: joint reconstruction, segmentation, and risk prediction."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Any
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+from reconseg3d.models.blocks import Decoder3D, TemporalEncoder
+from reconseg3d.models.heart_ttable import HeartTTable
+from reconseg3d.models.motion import MotionNet
+from reconseg3d.utils.shapes import assert_volume_shape
+
+
+@dataclass
+class ReconSeg3DOutput:
+    reconstruction: torch.Tensor
+    segmentation: torch.Tensor
+    mace_logits: torch.Tensor
+    features: torch.Tensor
+    flow: torch.Tensor | None = None
+    flow_bwd: torch.Tensor | None = None
+    seg_sequence: torch.Tensor | None = None
+    phenotype_logits: torch.Tensor | None = None
+
+
+def output_to_metric_dict(out: ReconSeg3DOutput) -> dict[str, torch.Tensor]:
+    """Pack model outputs for ``compute_metrics`` / eval."""
+    packed: dict[str, torch.Tensor] = {
+        "segmentation": out.segmentation,
+        "reconstruction": out.reconstruction,
+        "mace_logits": out.mace_logits,
+    }
+    if out.seg_sequence is not None:
+        packed["seg_sequence"] = out.seg_sequence
+    if out.flow is not None:
+        packed["flow"] = out.flow
+    if out.flow_bwd is not None:
+        packed["flow_bwd"] = out.flow_bwd
+    if out.phenotype_logits is not None:
+        packed["phenotype_logits"] = out.phenotype_logits
+    return packed
+
+
+class ReconSeg3D(nn.Module):
+    """
+    3D spatiotemporal cardiac model for AMI.
+
+    Input shape: (B, C, T, D, H, W) — batch, channels, time, depth, height, width.
+    Outputs:
+        - reconstruction: (B, C, T, D, H, W) — per-frame decode by default
+        - segmentation: (B, num_classes, D, H, W) — per-voxel labels at reference
+        - mace_logits: (B,) — binary MACE / Cox log-risk
+    """
+
+    def __init__(
+        self,
+        in_channels: int = 1,
+        num_seg_classes: int = 5,
+        base_channels: int = 16,
+        temporal_mode: str = "temporal_conv",
+        clinical_dim: int = 0,
+        dropout: float = 0.2,
+        per_frame_recon: bool = True,
+        predict_motion: bool = True,
+        per_frame_seg: bool = True,
+        fusion: str = "concat",
+        task: str = "mace",
+        num_phenotype_classes: int = 0,
+        ttable_embed_dim: int = 32,
+        ttable_patch_size: int = 4,
+        ttable_on_recon: bool = False,
+    ) -> None:
+        super().__init__()
+        self.in_channels = in_channels
+        self.num_seg_classes = num_seg_classes
+        self.clinical_dim = clinical_dim
+        self.per_frame_recon = per_frame_recon
+        self.predict_motion = predict_motion and per_frame_recon
+        self.per_frame_seg = per_frame_seg and per_frame_recon
+        self.fusion = fusion
+        self.task = task
+        self.num_phenotype_classes = num_phenotype_classes
+        self.ttable_on_recon = ttable_on_recon
+
+        self.encoder = TemporalEncoder(
+            in_channels=in_channels,
+            base_channels=base_channels,
+            temporal_mode=temporal_mode,
+        )
+        feat_ch = self.encoder.out_channels
+
+        self.seg_head = nn.Sequential(
+            nn.Conv3d(feat_ch, feat_ch // 2, 3, padding=1),
+            nn.BatchNorm3d(feat_ch // 2),
+            nn.ReLU(inplace=True),
+            nn.Conv3d(feat_ch // 2, num_seg_classes, 1),
+        )
+
+        self.recon_decoder = Decoder3D(feat_ch, out_channels=in_channels)
+        self.motion_net = MotionNet(in_channels=in_channels, base_channels=max(base_channels // 2, 4))
+
+        if fusion == "heart_ttable":
+            self.heart_ttable = HeartTTable(
+                in_channels=in_channels,
+                clinical_dim=clinical_dim,
+                embed_dim=ttable_embed_dim,
+                patch_size=ttable_patch_size,
+                dropout=dropout,
+            )
+            cls_in = ttable_embed_dim
+        else:
+            self.heart_ttable = None
+            cls_in = feat_ch + clinical_dim
+
+        hidden = max(cls_in // 2, 8)
+        self.mace_pool = nn.AdaptiveAvgPool3d(1)
+        self.mace_fc = nn.Sequential(
+            nn.Linear(cls_in, hidden),
+            nn.ReLU(inplace=True),
+            nn.Dropout(dropout),
+            nn.Linear(hidden, 1),
+        )
+        if num_phenotype_classes > 0:
+            self.pheno_fc = nn.Sequential(
+                nn.Linear(cls_in, hidden),
+                nn.ReLU(inplace=True),
+                nn.Dropout(dropout),
+                nn.Linear(hidden, num_phenotype_classes),
+            )
+        else:
+            self.pheno_fc = None
+
+    def _interp_3d(self, x: torch.Tensor, spatial: tuple[int, int, int]) -> torch.Tensor:
+        if x.shape[-3:] != spatial:
+            return F.interpolate(x, size=spatial, mode="trilinear", align_corners=False)
+        return x
+
+    def _decode_sequence(self, seq: torch.Tensor, spatial: tuple[int, int, int]) -> torch.Tensor:
+        b, fc, t, d2, h2, w2 = seq.shape
+        flat = seq.permute(0, 2, 1, 3, 4, 5).reshape(b * t, fc, d2, h2, w2)
+        recon = self._interp_3d(self.recon_decoder(flat), spatial)
+        c_out = recon.shape[1]
+        d, h, w = spatial
+        return recon.view(b, t, c_out, d, h, w).permute(0, 2, 1, 3, 4, 5).contiguous()
+
+    def _seg_sequence(self, seq: torch.Tensor, spatial: tuple[int, int, int]) -> torch.Tensor:
+        b, fc, t, d2, h2, w2 = seq.shape
+        flat = seq.permute(0, 2, 1, 3, 4, 5).reshape(b * t, fc, d2, h2, w2)
+        logits = self._interp_3d(self.seg_head(flat), spatial)
+        k = logits.shape[1]
+        d, h, w = spatial
+        return logits.view(b, t, k, d, h, w).permute(0, 2, 1, 3, 4, 5).contiguous()
+
+    def _risk_features(
+        self,
+        x: torch.Tensor,
+        features: torch.Tensor,
+        reconstruction: torch.Tensor,
+        clinical: torch.Tensor | None,
+    ) -> torch.Tensor:
+        if self.heart_ttable is not None:
+            vol = reconstruction if self.ttable_on_recon else x
+            return self.heart_ttable(vol, clinical).features
+        pooled = self.mace_pool(features).flatten(1)
+        if clinical is not None and self.clinical_dim > 0:
+            pooled = torch.cat([pooled, clinical], dim=1)
+        return pooled
+
+    def forward(
+        self,
+        x: torch.Tensor,
+        clinical: torch.Tensor | None = None,
+    ) -> ReconSeg3DOutput:
+        """
+        Args:
+            x: (B, C, T, D, H, W)
+            clinical: optional (B, clinical_dim) tabular features
+        """
+        assert_volume_shape(x, in_channels=self.in_channels)
+        b, c, t, d, h, w = x.shape
+        if self.clinical_dim > 0:
+            if clinical is None:
+                raise ValueError(f"clinical_dim={self.clinical_dim} but clinical is None")
+            if clinical.shape != (b, self.clinical_dim):
+                raise ValueError(f"clinical shape must be ({b}, {self.clinical_dim}), got {tuple(clinical.shape)}")
+
+        spatial = (d, h, w)
+        flow = None
+        flow_bwd = None
+        seg_sequence = None
+
+        if self.per_frame_recon:
+            seq, features = self.encoder(x, return_sequence=True)
+            reconstruction = self._decode_sequence(seq, spatial)
+            if self.per_frame_seg:
+                seg_sequence = self._seg_sequence(seq, spatial)
+                ref = t // 2
+                seg_logits = seg_sequence[:, :, ref]
+            else:

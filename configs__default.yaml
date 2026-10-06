@@ -1,0 +1,71 @@
+seed: 42
+deterministic: true
+device: auto
+output_dir: outputs
+run_name: default
+
+# Default = joint geometry/recon smoke on synthetic (not MACE selection).
+data:
+  source: synthetic
+  allow_fake_data: true
+  in_channels: 1
+  num_frames: 8
+  spatial_size: [16, 32, 32]  # paper-scale: [128, 256, 256] as (D, H, W) ~ 256×256×128
+  batch_size: 2
+  num_workers: 0  # Windows
+  train_samples: 16
+  val_samples: 8
+  clinical_dim: 4
+  slice_sampling: false
+
+model:
+  arch: reconseg3d
+  in_channels: 1
+  num_seg_classes: 5
+  base_channels: 16
+  temporal_mode: temporal_conv
+  clinical_dim: 4
+  dropout: 0.2
+  per_frame_recon: true
+  predict_motion: true
+  per_frame_seg: true
+  fusion: concat  # ablation; set heart_ttable for WP2 path
+  task: joint  # reconstruction | motion | segmentation | joint | phenotype | cox | mace
+
+loss:
+  w_seg: 1.0
+  w_recon: 0.5
+  w_mace: 0.0
+  recon_loss: l1
+  mace_loss: bce
+  use_dice: true
+  alpha1: 0.1   # recon3d MSE
+  alpha2: 1.0   # seg3d CE+Dice (used if >0, else w_seg)
+  alpha3: 0.0   # seg2d (needs slice_mask)
+  w_warp: 0.05
+  w_cycle: 0.02   # auxiliary image-cycle
+  w_inv: 0.1
+  w_smooth: 0.05
+  w_jac: 0.05
+  jac_eps: 0.0
+  w_loop: 0.05
+  w_ed_ref: 0.05
+  w_volsmooth: 0.01  # demoted physiological regularizer
+  w_segsmooth: 0.0
+  w_cox: 0.0
+  w_phenotype: 0.0
+
+metrics:
+  hd95: false  # enable for paper tables; skip in smoke (slow on large grids)
+
+selection:
+  metric: loss_total
+  mode: min
+
+train:
+  epochs: 2
+  lr: 0.001
+  weight_decay: 0.0001
+  grad_clip: 1.0
+  amp: false
+  early_stop_patience: 0

@@ -1,0 +1,33 @@
+{
+  "fold": 4,
+  "n_folds": 5,
+  "seed": 42,
+  "stratify_by": [
+    "NOR",
+    "MINF",
+    "DCM",
+    "HCM",
+    "RV"
+  ],
+  "train": [
+    "patient001",
+    "patient007",
+    "patient008"
+  ],
+  "val": [
+    "patient002",
+    "patient003",
+    "patient004",
+    "patient005",
+    "patient006"
+  ],
+  "test": [],
+  "diagnosis_counts_test": {
+    "NOR": 0,
+    "MINF": 0,
+    "DCM": 0,
+    "HCM": 0,
+    "RV": 0
+  },
+  "synthetic_placeholder": true
+}

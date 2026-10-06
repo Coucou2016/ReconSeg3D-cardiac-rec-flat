@@ -1,0 +1,65 @@
+# Ablation: ACDC 5-class phenotype (fake or real root under data/acdc).
+# Not private AMI MACE. Run prepare_demo_data.py first if root is empty.
+
+seed: 42
+deterministic: true
+device: auto
+output_dir: outputs/ablations/task_phenotype
+run_name: task_phenotype
+
+data:
+  source: acdc
+  root: data/acdc
+  in_channels: 1
+  num_frames: 8
+  spatial_size: [16, 32, 32]
+  batch_size: 2
+  num_workers: 0
+  clinical_dim: 4
+  slice_sampling: false
+  auto_fake: true
+
+model:
+  arch: reconseg3d
+  in_channels: 1
+  num_seg_classes: 4
+  base_channels: 16
+  temporal_mode: temporal_conv
+  clinical_dim: 4
+  dropout: 0.2
+  per_frame_recon: true
+  predict_motion: true
+  per_frame_seg: true
+  fusion: heart_ttable
+  task: phenotype
+  num_phenotype_classes: 5
+  ttable_embed_dim: 32
+  ttable_patch_size: 4
+  ttable_on_recon: false
+
+loss:
+  w_seg: 1.0
+  w_recon: 0.25
+  w_mace: 0.0
+  recon_loss: l1
+  mace_loss: bce
+  use_dice: true
+  alpha1: 0.1
+  alpha2: 1.0
+  alpha3: 0.0
+  w_warp: 0.1
+  w_cycle: 0.1
+  w_volsmooth: 0.05
+  w_phenotype: 1.0
+  w_cox: 0.0
+
+metrics:
+  hd95: false
+
+train:
+  epochs: 2
+  lr: 0.0005
+  weight_decay: 0.0001
+  grad_clip: 1.0
+  amp: false
+  early_stop_patience: 0

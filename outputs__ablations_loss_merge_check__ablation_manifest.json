@@ -1,0 +1,7 @@
+[
+  {
+    "name": "broadcast_baseline",
+    "config": "configs/ablations/broadcast_baseline.yaml",
+    "output_dir": "outputs\\ablations_loss_merge_check\\broadcast_baseline"
+  }
+]

@@ -1,0 +1,2 @@
+run,recon_psnr,recon_ssim,recon_mae,dice_lv,dice_rv,dice_myo,dice_mean,warp_error,cycle_error,ef_proxy,phenotype_acc,phenotype_auc,mace_auc,c_index,loss_total
+broadcast_baseline,19.113977916785572,0.014233971014618874,0.6913205236196518,0.13261365707513964,6.094124030373677e-09,0.38934068799725746,0.17398478372217369,,,,,,0.625,0.5555555555555556,2.4474207162857056

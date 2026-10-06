@@ -1,0 +1,465 @@
+SOURCE CODE DROP — drop2_train_model.txt — ACK then wait for more drops before proposing patches. Do not invent missing lines.
+
+===== BEGIN FILE: scripts/train.py =====
+#!/usr/bin/env python
+"""Train ReconSeg3D."""
+
+from __future__ import annotations
+
+import argparse
+import logging
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from reconseg3d.training.trainer import Trainer
+from reconseg3d.utils.config import load_config
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Train ReconSeg3D")
+    parser.add_argument("--config", type=str, default=str(ROOT / "configs" / "default.yaml"))
+    parser.add_argument("--epochs", type=int, default=None)
+    parser.add_argument("--output-dir", type=str, default=None)
+    args = parser.parse_args()
+
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    cfg = load_config(args.config)
+    if args.epochs is not None:
+        cfg.setdefault("train", {})["epochs"] = args.epochs
+    if args.output_dir is not None:
+        cfg["output_dir"] = args.output_dir
+
+    trainer = Trainer(cfg)
+    history = trainer.fit()
+    keys = ("loss_total", "mace_auc", "c_index", "phenotype_acc", "dice_mean", "recon_psnr")
+    summary = {k: history.get(k) for k in keys if k in history}
+    print(f"Training done. {summary}")
+
+
+if __name__ == "__main__":
+    main()
+
+===== END FILE: scripts/train.py =====
+
+===== BEGIN FILE: reconseg3d/models/reconseg3d.py =====
+"""ReconSeg3D: joint reconstruction, segmentation, and risk prediction."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Any
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+from reconseg3d.models.blocks import Decoder3D, TemporalEncoder
+from reconseg3d.models.heart_ttable import HeartTTable
+from reconseg3d.models.motion import MotionNet
+from reconseg3d.utils.shapes import assert_volume_shape
+
+
+@dataclass
+class ReconSeg3DOutput:
+    reconstruction: torch.Tensor
+    segmentation: torch.Tensor
+    mace_logits: torch.Tensor
+    features: torch.Tensor
+    flow: torch.Tensor | None = None
+    flow_bwd: torch.Tensor | None = None
+    seg_sequence: torch.Tensor | None = None
+    phenotype_logits: torch.Tensor | None = None
+
+
+def output_to_metric_dict(out: ReconSeg3DOutput) -> dict[str, torch.Tensor]:
+    """Pack model outputs for ``compute_metrics`` / eval."""
+    packed: dict[str, torch.Tensor] = {
+        "segmentation": out.segmentation,
+        "reconstruction": out.reconstruction,
+        "mace_logits": out.mace_logits,
+    }
+    if out.seg_sequence is not None:
+        packed["seg_sequence"] = out.seg_sequence
+    if out.flow is not None:
+        packed["flow"] = out.flow
+    if out.flow_bwd is not None:
+        packed["flow_bwd"] = out.flow_bwd
+    if out.phenotype_logits is not None:
+        packed["phenotype_logits"] = out.phenotype_logits
+    return packed
+
+
+class ReconSeg3D(nn.Module):
+    """
+    3D spatiotemporal cardiac model for AMI.
+
+    Input shape: (B, C, T, D, H, W) — batch, channels, time, depth, height, width.
+    Outputs:
+        - reconstruction: (B, C, T, D, H, W) — per-frame decode by default
+        - segmentation: (B, num_classes, D, H, W) — per-voxel labels at reference
+        - mace_logits: (B,) — binary MACE / Cox log-risk
+    """
+
+    def __init__(
+        self,
+        in_channels: int = 1,
+        num_seg_classes: int = 5,
+        base_channels: int = 16,
+        temporal_mode: str = "temporal_conv",
+        clinical_dim: int = 0,
+        dropout: float = 0.2,
+        per_frame_recon: bool = True,
+        predict_motion: bool = True,
+        per_frame_seg: bool = True,
+        fusion: str = "concat",
+        task: str = "mace",
+        num_phenotype_classes: int = 0,
+        ttable_embed_dim: int = 32,
+        ttable_patch_size: int = 4,
+        ttable_on_recon: bool = False,
+    ) -> None:
+        super().__init__()
+        self.in_channels = in_channels
+        self.num_seg_classes = num_seg_classes
+        self.clinical_dim = clinical_dim
+        self.per_frame_recon = per_frame_recon
+        self.predict_motion = predict_motion and per_frame_recon
+        self.per_frame_seg = per_frame_seg and per_frame_recon
+        self.fusion = fusion
+        self.task = task
+        self.num_phenotype_classes = num_phenotype_classes
+        self.ttable_on_recon = ttable_on_recon
+
+        self.encoder = TemporalEncoder(
+            in_channels=in_channels,
+            base_channels=base_channels,
+            temporal_mode=temporal_mode,
+        )
+        feat_ch = self.encoder.out_channels
+
+        self.seg_head = nn.Sequential(
+            nn.Conv3d(feat_ch, feat_ch // 2, 3, padding=1),
+            nn.BatchNorm3d(feat_ch // 2),
+            nn.ReLU(inplace=True),
+            nn.Conv3d(feat_ch // 2, num_seg_classes, 1),
+        )
+
+        self.recon_decoder = Decoder3D(feat_ch, out_channels=in_channels)
+        self.motion_net = MotionNet(in_channels=in_channels, base_channels=max(base_channels // 2, 4))
+
+        if fusion == "heart_ttable":
+            self.heart_ttable = HeartTTable(
+                in_channels=in_channels,
+                clinical_dim=clinical_dim,
+                embed_dim=ttable_embed_dim,
+                patch_size=ttable_patch_size,
+                dropout=dropout,
+            )
+            cls_in = ttable_embed_dim
+        else:
+            self.heart_ttable = None
+            cls_in = feat_ch + clinical_dim
+
+        hidden = max(cls_in // 2, 8)
+        self.mace_pool = nn.AdaptiveAvgPool3d(1)
+        self.mace_fc = nn.Sequential(
+            nn.Linear(cls_in, hidden),
+            nn.ReLU(inplace=True),
+            nn.Dropout(dropout),
+            nn.Linear(hidden, 1),
+        )
+        if num_phenotype_classes > 0:
+            self.pheno_fc = nn.Sequential(
+                nn.Linear(cls_in, hidden),
+                nn.ReLU(inplace=True),
+                nn.Dropout(dropout),
+                nn.Linear(hidden, num_phenotype_classes),
+            )
+        else:
+            self.pheno_fc = None
+
+    def _interp_3d(self, x: torch.Tensor, spatial: tuple[int, int, int]) -> torch.Tensor:
+        if x.shape[-3:] != spatial:
+            return F.interpolate(x, size=spatial, mode="trilinear", align_corners=False)
+        return x
+
+    def _decode_sequence(self, seq: torch.Tensor, spatial: tuple[int, int, int]) -> torch.Tensor:
+        b, fc, t, d2, h2, w2 = seq.shape
+        flat = seq.permute(0, 2, 1, 3, 4, 5).reshape(b * t, fc, d2, h2, w2)
+        recon = self._interp_3d(self.recon_decoder(flat), spatial)
+        c_out = recon.shape[1]
+        d, h, w = spatial
+        return recon.view(b, t, c_out, d, h, w).permute(0, 2, 1, 3, 4, 5).contiguous()
+
+    def _seg_sequence(self, seq: torch.Tensor, spatial: tuple[int, int, int]) -> torch.Tensor:
+        b, fc, t, d2, h2, w2 = seq.shape
+        flat = seq.permute(0, 2, 1, 3, 4, 5).reshape(b * t, fc, d2, h2, w2)
+        logits = self._interp_3d(self.seg_head(flat), spatial)
+        k = logits.shape[1]
+        d, h, w = spatial
+        return logits.view(b, t, k, d, h, w).permute(0, 2, 1, 3, 4, 5).contiguous()
+
+    def _risk_features(
+        self,
+        x: torch.Tensor,
+        features: torch.Tensor,
+        reconstruction: torch.Tensor,
+        clinical: torch.Tensor | None,
+    ) -> torch.Tensor:
+        if self.heart_ttable is not None:
+            vol = reconstruction if self.ttable_on_recon else x
+            return self.heart_ttable(vol, clinical).features
+        pooled = self.mace_pool(features).flatten(1)
+        if clinical is not None and self.clinical_dim > 0:
+            pooled = torch.cat([pooled, clinical], dim=1)
+        return pooled
+
+    def forward(
+        self,
+        x: torch.Tensor,
+        clinical: torch.Tensor | None = None,
+    ) -> ReconSeg3DOutput:
+        """
+        Args:
+            x: (B, C, T, D, H, W)
+            clinical: optional (B, clinical_dim) tabular features
+        """
+        assert_volume_shape(x, in_channels=self.in_channels)
+        b, c, t, d, h, w = x.shape
+        if self.clinical_dim > 0:
+            if clinical is None:
+                raise ValueError(f"clinical_dim={self.clinical_dim} but clinical is None")
+            if clinical.shape != (b, self.clinical_dim):
+                raise ValueError(f"clinical shape must be ({b}, {self.clinical_dim}), got {tuple(clinical.shape)}")
+
+        spatial = (d, h, w)
+        flow = None
+        flow_bwd = None
+        seg_sequence = None
+
+        if self.per_frame_recon:
+            seq, features = self.encoder(x, return_sequence=True)
+            reconstruction = self._decode_sequence(seq, spatial)
+            if self.per_frame_seg:
+                seg_sequence = self._seg_sequence(seq, spatial)
+                ref = t // 2
+                seg_logits = seg_sequence[:, :, ref]
+            else:
+                seg_logits = self._interp_3d(self.seg_head(features), spatial)
+            if self.predict_motion:
+                flow, flow_bwd = self.motion_net(reconstruction)
+        else:
+            features = self.encoder(x)
+            seg_logits = self._interp_3d(self.seg_head(features), spatial)
+            recon_low = self._interp_3d(self.recon_decoder(features), spatial)
+            reconstruction = recon_low.unsqueeze(2).expand(b, c, t, d, h, w).contiguous()
+
+        feat_vec = self._risk_features(x, features, reconstruction, clinical)
+        mace_logits = self.mace_fc(feat_vec).squeeze(-1)
+        phenotype_logits = self.pheno_fc(feat_vec) if self.pheno_fc is not None else None
+
+        return ReconSeg3DOutput(
+            reconstruction=reconstruction,
+            segmentation=seg_logits,
+            mace_logits=mace_logits,
+            features=features,
+            flow=flow,
+            flow_bwd=flow_bwd,
+            seg_sequence=seg_sequence,
+            phenotype_logits=phenotype_logits,
+        )
+
+
+def build_model(cfg: dict[str, Any]):
+    """Factory from config dict."""
+    model_cfg = cfg.get("model", cfg)
+    arch = model_cfg.get("arch", "reconseg3d")
+    if arch == "volume_recon":
+        from reconseg3d.models.volume_recon import build_volume_recon
+
+        return build_volume_recon(cfg)
+    if arch == "volume_seg":
+        from reconseg3d.models.volume_seg import build_volume_seg
+
+        return build_volume_seg(cfg)
+    return ReconSeg3D(
+        in_channels=model_cfg.get("in_channels", 1),
+        num_seg_classes=model_cfg.get("num_seg_classes", 5),
+        base_channels=model_cfg.get("base_channels", 16),
+        temporal_mode=model_cfg.get("temporal_mode", "temporal_conv"),
+        clinical_dim=model_cfg.get("clinical_dim", 0),
+        dropout=model_cfg.get("dropout", 0.2),
+        per_frame_recon=model_cfg.get("per_frame_recon", True),
+        predict_motion=model_cfg.get("predict_motion", True),
+        per_frame_seg=model_cfg.get("per_frame_seg", True),
+        fusion=model_cfg.get("fusion", "concat"),
+        task=model_cfg.get("task", "mace"),
+        num_phenotype_classes=model_cfg.get("num_phenotype_classes", 0),
+        ttable_embed_dim=model_cfg.get("ttable_embed_dim", 32),
+        ttable_patch_size=model_cfg.get("ttable_patch_size", 4),
+        ttable_on_recon=model_cfg.get("ttable_on_recon", False),
+    )
+
+===== END FILE: reconseg3d/models/reconseg3d.py =====
+
+===== BEGIN FILE: reconseg3d/models/motion.py =====
+"""Differentiable 3D motion (displacement) and volume warping."""
+
+from __future__ import annotations
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+from reconseg3d.models.blocks import ConvBlock3D
+
+
+def identity_grid(d: int, h: int, w: int, device: torch.device, dtype: torch.dtype) -> torch.Tensor:
+    """Normalized grid (D, H, W, 3) in grid_sample (x, y, z) order."""
+    zz = torch.linspace(-1.0, 1.0, d, device=device, dtype=dtype)
+    yy = torch.linspace(-1.0, 1.0, h, device=device, dtype=dtype)
+    xx = torch.linspace(-1.0, 1.0, w, device=device, dtype=dtype)
+    grid_z, grid_y, grid_x = torch.meshgrid(zz, yy, xx, indexing="ij")
+    return torch.stack((grid_x, grid_y, grid_z), dim=-1)
+
+
+def flow_to_grid(flow: torch.Tensor) -> torch.Tensor:
+    """
+    Convert voxel displacement (B, 3, D, H, W) with channels (dz, dy, dx)
+    into a sampling grid (B, D, H, W, 3) for ``grid_sample``.
+    """
+    b, _, d, h, w = flow.shape
+    base = identity_grid(d, h, w, flow.device, flow.dtype).unsqueeze(0).expand(b, -1, -1, -1, -1)
+    dz, dy, dx = flow[:, 0], flow[:, 1], flow[:, 2]
+    scale_z = 2.0 / max(d - 1, 1)
+    scale_y = 2.0 / max(h - 1, 1)
+    scale_x = 2.0 / max(w - 1, 1)
+    disp = torch.stack((dx * scale_x, dy * scale_y, dz * scale_z), dim=-1)
+    return base + disp
+
+
+def warp_volume(volume: torch.Tensor, flow: torch.Tensor) -> torch.Tensor:
+    """Warp (B, C, D, H, W) with displacement (B, 3, D, H, W)."""
+    grid = flow_to_grid(flow)
+    return F.grid_sample(volume, grid, mode="bilinear", padding_mode="border", align_corners=True)
+
+
+class MotionNet(nn.Module):
+    """Predict 3D displacement between consecutive reconstructed frames."""
+
+    def __init__(self, in_channels: int = 1, base_channels: int = 8) -> None:
+        super().__init__()
+        c = max(base_channels, 4)
+        self.encoder = nn.Sequential(
+            ConvBlock3D(in_channels * 2, c),
+            ConvBlock3D(c, c),
+        )
+        self.flow_head = nn.Conv3d(c, 3, kernel_size=3, padding=1)
+        nn.init.zeros_(self.flow_head.weight)
+        nn.init.zeros_(self.flow_head.bias)
+
+    def forward_pair(self, src: torch.Tensor, tgt: torch.Tensor) -> torch.Tensor:
+        """src/tgt: (B, C, D, H, W) -> flow (B, 3, D, H, W) taking src toward tgt."""
+        return self.flow_head(self.encoder(torch.cat([src, tgt], dim=1)))
+
+    def forward(self, recon: torch.Tensor) -> tuple[torch.Tensor | None, torch.Tensor | None]:
+        """
+        Args:
+            recon: (B, C, T, D, H, W)
+        Returns:
+            flow_fwd, flow_bwd each (B, 3, T-1, D, H, W), or (None, None) if T < 2.
+        """
+        if recon.ndim != 6:
+            raise ValueError(f"Expected (B,C,T,D,H,W), got {tuple(recon.shape)}")
+        b, c, t, d, h, w = recon.shape
+        if t < 2:
+            return None, None
+        src = recon[:, :, :-1].permute(0, 2, 1, 3, 4, 5).reshape(b * (t - 1), c, d, h, w)
+        tgt = recon[:, :, 1:].permute(0, 2, 1, 3, 4, 5).reshape(b * (t - 1), c, d, h, w)
+        fwd = self.forward_pair(src, tgt).view(b, t - 1, 3, d, h, w).permute(0, 2, 1, 3, 4, 5)
+        bwd = self.forward_pair(tgt, src).view(b, t - 1, 3, d, h, w).permute(0, 2, 1, 3, 4, 5)
+        return fwd.contiguous(), bwd.contiguous()
+
+
+def warp_consistency_loss(recon: torch.Tensor, flow_fwd: torch.Tensor, flow_bwd: torch.Tensor | None = None) -> torch.Tensor:
+    """||Vhat_{t+1} - warp(Vhat_t, u_t)||_1 (+ backward if provided)."""
+    _b, _c, t, _d, _h, _w = recon.shape
+    if t < 2:
+        return recon.sum() * 0.0
+    src = recon[:, :, :-1]
+    tgt = recon[:, :, 1:]
+    bt = src.shape[0] * src.shape[2]
+    c = src.shape[1]
+    d, h, w = src.shape[3:]
+    src_f = src.permute(0, 2, 1, 3, 4, 5).reshape(bt, c, d, h, w)
+    tgt_f = tgt.permute(0, 2, 1, 3, 4, 5).reshape(bt, c, d, h, w)
+    flow_f = flow_fwd.permute(0, 2, 1, 3, 4, 5).reshape(bt, 3, d, h, w)
+    warped = warp_volume(src_f, flow_f)
+    loss = F.l1_loss(warped, tgt_f)
+    if flow_bwd is not None:
+        flow_b = flow_bwd.permute(0, 2, 1, 3, 4, 5).reshape(bt, 3, d, h, w)
+        warped_b = warp_volume(tgt_f, flow_b)
+        loss = loss + F.l1_loss(warped_b, src_f)
+        loss = loss * 0.5
+    return loss
+
+
+def cycle_consistency_loss(recon: torch.Tensor, flow_fwd: torch.Tensor, flow_bwd: torch.Tensor) -> torch.Tensor:
+    """Warp there and back: ||warp(warp(V_t, u_fwd), u_bwd) - V_t||_1."""
+    _b, _c, t, _d, _h, _w = recon.shape
+    if t < 2:
+        return recon.sum() * 0.0
+    src = recon[:, :, :-1]
+    tgt = recon[:, :, 1:]
+    bt = src.shape[0] * src.shape[2]
+    c = src.shape[1]
+    d, h, w = src.shape[3:]
+    src_f = src.permute(0, 2, 1, 3, 4, 5).reshape(bt, c, d, h, w)
+    tgt_f = tgt.permute(0, 2, 1, 3, 4, 5).reshape(bt, c, d, h, w)
+    flow_f = flow_fwd.permute(0, 2, 1, 3, 4, 5).reshape(bt, 3, d, h, w)
+    flow_b = flow_bwd.permute(0, 2, 1, 3, 4, 5).reshape(bt, 3, d, h, w)
+    cyc_src = warp_volume(warp_volume(src_f, flow_f), flow_b)
+    cyc_tgt = warp_volume(warp_volume(tgt_f, flow_b), flow_f)
+    return 0.5 * (F.l1_loss(cyc_src, src_f) + F.l1_loss(cyc_tgt, tgt_f))
+
+
+def volume_curve_loss(seg_logits_seq: torch.Tensor, lv_index: int = 1, rv_index: int = 2) -> torch.Tensor:
+    """Soft second difference of LV/RV volume *fractions* over T (needs T >= 3).
+
+    Counts are divided by D*H*W so the loss is O(1) and does not explode with
+    spatial resolution (raw voxel counts made ``w_volsmooth`` dominate early smoke).
+    """
+    if seg_logits_seq.ndim != 6:
+        raise ValueError(f"Expected (B,K,T,D,H,W), got {tuple(seg_logits_seq.shape)}")
+    t = seg_logits_seq.shape[2]
+    if t < 3:
+        return seg_logits_seq.sum() * 0.0
+    probs = F.softmax(seg_logits_seq, dim=1)
+    k = probs.shape[1]
+    spatial = float(probs.shape[3] * probs.shape[4] * probs.shape[5])
+    terms = []
+    for idx in (lv_index, rv_index):
+        if idx >= k:
+            continue
+        # (B, T) fractional chamber volumes in [0, 1]
+        frac = probs[:, idx].sum(dim=(2, 3, 4)) / max(spatial, 1.0)
+        d2 = frac[:, 2:] - 2.0 * frac[:, 1:-1] + frac[:, :-2]
+        terms.append((d2 ** 2).mean())
+    if not terms:
+        return seg_logits_seq.sum() * 0.0
+    return sum(terms) / len(terms)
+
+
+def temporal_seg_smoothness(seg_logits_seq: torch.Tensor) -> torch.Tensor:
+    """L1 smoothness of softmax maps across adjacent frames."""
+    if seg_logits_seq.shape[2] < 2:
+        return seg_logits_seq.sum() * 0.0
+    probs = F.softmax(seg_logits_seq, dim=1)
+    return (probs[:, :, 1:] - probs[:, :, :-1]).abs().mean()
+
+===== END FILE: reconseg3d/models/motion.py =====
+

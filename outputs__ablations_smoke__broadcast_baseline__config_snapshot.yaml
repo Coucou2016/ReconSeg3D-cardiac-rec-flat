@@ -1,0 +1,65 @@
+seed: 42
+deterministic: true
+device: auto
+output_dir: outputs\ablations_smoke\broadcast_baseline
+run_name: broadcast_baseline
+data:
+  source: synthetic
+  in_channels: 1
+  num_frames: 8
+  spatial_size:
+  - 16
+  - 32
+  - 32
+  batch_size: 2
+  num_workers: 0
+  train_samples: 16
+  val_samples: 8
+  clinical_dim: 4
+  slice_sampling: true
+  slice_s_range:
+  - 8
+  - 16
+  slice_rot_deg:
+  - 1
+  - 5
+  slice_trans_px:
+  - 1
+  - 5
+  slice_noise_std: 0.02
+model:
+  arch: reconseg3d
+  in_channels: 1
+  num_seg_classes: 4
+  base_channels: 16
+  temporal_mode: temporal_conv
+  clinical_dim: 4
+  dropout: 0.2
+  per_frame_recon: false
+  predict_motion: false
+  per_frame_seg: false
+  fusion: concat
+  task: mace
+loss:
+  w_seg: 0.0
+  w_recon: 0.0
+  w_mace: 0.25
+  recon_loss: l2
+  mace_loss: bce
+  use_dice: true
+  alpha1: 0.1
+  alpha2: 1.0
+  alpha3: 0.2
+  w_warp: 0.0
+  w_cycle: 0.0
+  w_volsmooth: 0.0
+  w_segsmooth: 0.0
+metrics:
+  hd95: false
+train:
+  epochs: 1
+  lr: 0.001
+  weight_decay: 0.0001
+  grad_clip: 1.0
+  amp: false
+  early_stop_patience: 0

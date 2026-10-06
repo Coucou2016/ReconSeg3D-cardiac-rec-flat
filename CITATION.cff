@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it and the original ReconSeg3D clinical paper separately."
+title: "ReconSeg3D-cardiac-rec: geometry- and motion-constrained 4D CMR methods extension"
+type: software
+authors:
+  - name: "ReconSeg3D-cardiac-rec contributors"
+repository-code: "https://github.com/Coucou2016/ReconSeg3D-cardiac-rec"
+license: Apache-2.0
+abstract: >-
+  Public methods codebase for sparse short-axis cardiac MRI reconstruction,
+  segmentation, and inverse-consistent motion regularization. Does not claim
+  private-AMI MACE discrimination from the original clinical study.
+references:
+  - type: article
+    title: "3D Spatiotemporal cardiac reconstruction for predicting MACE in acute myocardial infarction"
+    authors:
+      - family-names: Gao
+        given-names: Q.
+    year: 2026
+    journal: "npj Digital Medicine"
+    doi: "10.1038/s41746-026-02449-0"

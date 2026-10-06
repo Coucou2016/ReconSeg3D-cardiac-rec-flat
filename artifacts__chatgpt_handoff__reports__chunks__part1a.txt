@@ -1,0 +1,315 @@
+SOURCE PACK CHUNK 1 — continue reading next chunks before proposing patches.
+# Source pack for ChatGPT audit
+Do not invent missing files. SHA ZIP baseline D7830799...
+
+---
+## FILE: docs/PAPER_PLAN.md
+
+```
+# Paper plan (living)
+
+This repo is a **research re-implementation + extension**, not a drop-in reproduction of the private AMI numbers in the original npj Digital Medicine paper.
+
+## What the original paper did
+
+1. **ReconSeg3D (public MM-WHS + ACDC):** 3D ViT reconstruction of dense volumes from sparse short-axis stacks, then 3D nnU-Net segmentation (LV / RV / LVM).
+2. **HeartTTable (private AMI):** spatial + temporal + table transformers with class-token cross-attention, Cox PH, 5-year MACE.
+
+We **do not claim 0.934 AUC**. That figure is tied to private AMI data and the original training recipe.
+
+## What this codebase can verify publicly
+
+| Table | Question | Data | Metrics | Claim status |
+|-------|----------|------|---------|--------------|
+| **T1** Reconstruction | Sparse SA → dense cine/3D | ACDC, MM-WHS (or synthetic smoke) | PSNR, global-SSIM proxy, MAE | Public, compact tensors by default |
+| **T2** Segmentation | 4-class LV/RV/MYO | ACDC, MM-WHS | Dice per class, optional HD95 | Public; not full nnU-Net 256³ |
+| **T3** Infarct phenotyping | Disease / scar proxies | ACDC 5-class + MINF; EMIDEC scar | Accuracy / AUC on phenotype or MINF | **Proxy only**, not 5-year MACE |
+| **T4** Motion-consistent 4D | Per-frame recon + warp | Synthetic / ACDC 4D | Warp L1, cycle error, volume-curve, EF proxy | **Main novelty of this repo** |
+
+Private AMI Cox / HeartTTable 5-year MACE remains **out of scope** until the user attaches a de-identified manifest (`data.source: nifti`) and reports C-index with nested validation. Do not copy the original AUC.
+
+## Implementation vs paper-scale
+
+| Component | Paper | This repo (default) |
+|-----------|-------|---------------------|
+| Grid | 256×256×128 | `(D,H,W)=(16,32,32)` smoke; config comments show paper size |
+| Recon backbone | 3D ViT | Compact 3D CNN + optional transformer bottleneck (`volume_recon.py`) |
+| Seg backbone | 3D nnU-Net | Compact 3D UNet (`volume_seg.py`) + joint ReconSeg3D heads |
+| Time | Broadcast recon (limitation of the previous prototype) | **Per-frame decode + motion warp** (default) |
+| Risk | Cox PH on private AMI | BCE MACE (synthetic) / phenotype (ACDC) / Cox loss (API ready) |
+
+## Demo paper pipeline (no private AMI)
+
+```powershell
+cd E:\Projects\20260523-ReconSeg3D-cardiac-rec
+$env:PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
+
+# 1) Fake ACDC + MM-WHS + EMIDEC under data/
+python scripts/prepare_demo_data.py
+
+# 2) Paper configs (1 epoch smoke)
+python scripts/train.py --config configs/paper_recon.yaml --epochs 1 --output-dir outputs/paper_recon_smoke
+python scripts/eval.py --config configs/paper_recon.yaml --checkpoint outputs/paper_recon_smoke/last.pt
+python scripts/train.py --config configs/paper_acdc.yaml --epochs 1 --output-dir outputs/paper_acdc_smoke
+python scripts/eval.py --config configs/paper_acdc.yaml --checkpoint outputs/paper_acdc_smoke/last.pt
+
+# 3) Ablation matrix (broadcast / per_frame±motion / fusion / phenotype)
+python scripts/run_ablations.py --epochs 1 --output-root outputs/ablations
+
+# 4) Table from metrics.json (T1–T4 columns when present)
+python scripts/summarize_runs.py --runs-root outputs/ablations --out-md outputs/ablations/table.md --out-csv outputs/ablations/table.csv
+```
+
+Longer runs: raise `--epochs` (configs default to 2–20) or edit `train.epochs` / `train.early_stop_patience`.
+
+### Ablation configs (`configs/ablations/`)
+
+| Config | Intent |
+|--------|--------|
+| `broadcast_baseline.yaml` | `per_frame_recon: false` |
+| `per_frame_no_motion.yaml` | per-frame, `w_warp`/`w_cycle` = 0 |
+| `per_frame_motion.yaml` | full warp + cycle |
+| `fusion_concat.yaml` | concat MLP fusion |
+| `fusion_heart_ttable.yaml` | HeartTTable-lite fusion |
+| `task_phenotype.yaml` | fake/real ACDC phenotype |
+
+Subset example:
+
+```powershell
+python scripts/run_ablations.py --epochs 1 --only broadcast_baseline per_frame_motion task_phenotype
+```
+
+If `data.root` for ACDC/MM-WHS/EMIDEC is empty and `data.auto_fake: true` (default on public loaders), training auto-calls `make_fake_*`. Prefer `prepare_demo_data.py` once for a shared tree.
+
+## Suggested run order
+
+1. Smoke: `python scripts/train.py --config configs/default.yaml --epochs 2`
+2. Sparse recon+seg+motion: `configs/paper_recon.yaml` (synthetic or swap `data.source`)
+3. ACDC phenotype: `configs/paper_acdc.yaml` after `prepare_demo_data.py` or a real ACDC root
+4. Ablations: `scripts/run_ablations.py`
+5. EMIDEC scar stub: `data.source: emidec` (see `docs/DATA.md`)
+6. Private AMI: `data.source: nifti`, `model.fusion: heart_ttable`, `model.task: cox`
+
+## Honest gaps for a paper
+
+- No original weights, no private AMI cohort, no nested CV / calibration plots yet.
+- Compact backbones are **interface-compatible**, not compute-matched to 3D ViT / nnU-Net.
+- HD95 uses a subsampled numpy surface distance (not MONAI/SimpleITK).
+- SSIM is a **global** proxy, not a 3D windowed SSIM (stabilizers scale with data range).
+- Volume-curve / `w_volsmooth` uses **fractional** LV/RV volumes (counts / DHW), not raw voxel counts.
+- Trainer pools MACE/phenotype AUC and C-index over the full epoch (not mean-of-batch-AUC); tiny fake splits can still look extreme.
+- `best.pt` selection is task-aware: phenotype → phenotype_acc/auc, cox → c_index, else mace_auc (fallback: val loss).
+- Slice-sampling is a simulation of sparse SA, not vendor undersampled k-space.
+- Clinical table tokens need a real feature dictionary (labs, meds, ECG) before HeartTTable is more than a fusion ablation.
+- Demo AUC / Dice on fake NIfTIs are **pipeline checks only** — do not cite as clinical performance.
+
+```
+
+---
+## FILE: docs/DATA.md
+
+```
+# Data layout / 数据格式
+
+## Tensor layout (canonical)
+
+| Field | Shape | Dtype | Notes |
+|-------|-------|-------|-------|
+| `volume` | `(B, C, T, D, H, W)` | float32 | Cine MRI / CT sequence (sparse SA if `slice_sampling`) |
+| `volume_target` | same as volume | float32 | Dense recon target (present when slice sampling) |
+| `slice_mask` | `(B, D)` | float32 | 1 on sampled short-axis slices |
+| `segmentation` | `(B, D, H, W)` | int64 | Reference-frame voxel labels |
+| `mace` | `(B,)` | float32 | 0/1 MACE (dummy 0 on public datasets) |
+| `time` / `event` | `(B,)` | float32 | Survival time + event indicator (Cox) |
+| `phenotype` | `(B,)` | int64 | ACDC 5-class or MINF proxy |
+| `clinical` | `(B, F)` | float32 | Optional tabular features |
+
+If your files use `(B, C, D, H, W, T)`, convert with:
+
+```python
+from reconseg3d.utils.shapes import permute_dhw_t_to_ctdhw
+volume = permute_dhw_t_to_ctdhw(volume)
+```
+
+`data.source` may be `synthetic` | `acdc` | `mmwhs` | `emidec` | `nifti`.
+
+Fake NIfTI writers work **without** `nibabel` (numpy+gzip fallback in `reconseg3d.data.io`). Install `nibabel` for real challenge files.
+
+Paper-scale reconstruction grid is **256×256×128** (H×W×D). This repo stores spatial size as **`(D, H, W)`**; compact tests use `[16, 32, 32]` or smaller.
+
+## Segmentation classes
+
+| ID | Structure | Used when |
+|----|-----------|-----------|
+| 0 | Background | always |
+| 1 | Left ventricle (LV) | always |
+| 2 | Right ventricle (RV) | ACDC / MM-WHS / synthetic |
+| 3 | Myocardium (LVM) | always |
+| 4 | Scar / infarct | EMIDEC / 5-class synthetic; omit for 4-class paper recon+seg |
+
+## Sparse SA slice sampling
+
+`reconseg3d.data.slice_sampling.sample_sparse_sa_stack` samples **S ∈ [8, 16]** slices along D (clipped to depth), applies in-plane rotation 1–5° and translation 1–5 px, adds noise, and **zeros unselected slices**. Enable with `data.slice_sampling: true` (see `configs/paper_recon.yaml`).
+
+## ACDC (`data.source: acdc`)
+
+Official layout:
+
+```
+data/acdc/patient001/
+  Info.cfg                 # ED, ES, Height, Weight, NbFrame, Group
+  patient001_4d.nii.gz     # (X, Y, Z, T)
+  patient001_frame01.nii.gz
+  patient001_frame01_gt.nii.gz
+```
+
+Obtain from the [ACDC challenge](https://www.creatis.insa-lyon.fr/Challenge/acdc/). Point the config:
+
+```yaml
+data:
+  source: acdc
+  root: E:/data/ACDC/training   # folder that contains patientXXX/
+  spatial_size: [16, 32, 32]    # raise toward [128, 256, 256] for paper-scale
+```
+
+GT mapping: ACDC `{1=RV, 2=MYO, 3=LV}` → repo `{2=RV, 3=MYO, 1=LV}`.
+Phenotype from `Group`: NOR / MINF / DCM / HCM / RV.
+
+**Fake data for CI / local demos** (do not download in tests):
+
+```powershell
+python scripts/prepare_demo_data.py
+# or:
+python -c "from reconseg3d.data.acdc import make_fake_acdc; make_fake_acdc('data/acdc')"
+```
+
+If `data.auto_fake: true` (default for public loaders) and `root` has no patients, training creates a fake tree automatically.
+## MM-WHS MRI (`data.source: mmwhs`)
+
+```
+data/mmwhs/
+  mr_train_1001_image.nii.gz   # (X, Y, Z)
+  mr_train_1001_label.nii.gz
+```
+
+Label map: **500→LV(1), 600→RV(2), 205→LVM(3)**; other structures → background.
+3D volumes are tiled along T when `num_frames > 1` (motion losses should be down-weighted).
+
+```powershell
+python -c "from reconseg3d.data.mmwhs import make_fake_mmwhs; make_fake_mmwhs('data/mmwhs')"
+```
+
+## EMIDEC LGE (`data.source: emidec`)
+
+```
+data/emidec/Case_1/
+  Images/Case_1.nii.gz
+  Contours/Case_1.nii.gz
+```
+
+Contours: 1 myocardium, 2 cavity, 3 infarct, 4 MVO → repo LV=1, MYO=3, scar=4.
+Set `data.stack_scar_channel: true` and `model.in_channels: 2` for `[cine, scar_mask]` input.
+
+```powershell
+python -c "from reconseg3d.data.emidec import make_fake_emidec; make_fake_emidec('data/emidec')"
+```
+
+## Real AMI manifest (`data.source: nifti`)
+
+Private AMI / HeartTTable+Cox experiments (not for public AUC claims):
+
+```
+data/ami/
+  train_manifest.json
+  val_manifest.json
+  case_001/
+    cine.nii.gz
+    seg.nii.gz
+    label.json           # {"mace": 0|1, "time": 4.2, "event": 1, "phenotype": 1}
+    clinical.json
+```
+
+## Synthetic demo
+
+Set `data.source: synthetic` in `configs/default.yaml`. Labels correlate scar burden, troponin, EF, and age with MACE probability (pipeline checks only, **not** clinical validation).
+
+```
+
+---
+## FILE: configs/default.yaml
+
+```
+seed: 42
+deterministic: true
+device: auto
+output_dir: outputs
+run_name: default
+
+data:
+  source: synthetic
+  in_channels: 1
+  num_frames: 8
+  spatial_size: [16, 32, 32]  # paper-scale: [128, 256, 256] as (D, H, W) ~ 256×256×128
+  batch_size: 2
+  num_workers: 0  # Windows
+  train_samples: 16
+  val_samples: 8
+  clinical_dim: 4
+  slice_sampling: false
+
+model:
+  arch: reconseg3d
+  in_channels: 1
+  num_seg_classes: 5
+  base_channels: 16
+  temporal_mode: temporal_conv
+  clinical_dim: 4
+  dropout: 0.2
+  per_frame_recon: true
+  predict_motion: true
+  per_frame_seg: true
+  fusion: concat  # ablation; set heart_ttable for WP2 path
+  task: mace  # mace | cox | phenotype
+
+loss:
+  w_seg: 1.0
+  w_recon: 0.5
+  w_mace: 1.0
+  recon_loss: l1
+  mace_loss: bce
+  use_dice: true
+  alpha1: 0.1   # recon3d MSE
+  alpha2: 1.0   # seg3d CE+Dice (used if >0, else w_seg)
+  alpha3: 0.0   # seg2d (needs slice_mask)
+  w_warp: 0.1
+  w_cycle: 0.1
+  w_volsmooth: 0.05
+  w_segsmooth: 0.0
+  w_cox: 0.0
+  w_phenotype: 0.0
+
+metrics:
+  hd95: false  # enable for paper tables; skip in smoke (slow on large grids)
+
+train:
+  epochs: 2
+  lr: 0.001
+  weight_decay: 0.0001
+  grad_clip: 1.0
+  amp: false
+  early_stop_patience: 0
+
+```
+
+---
+## FILE: configs/paper_acdc.yaml
+
+```
+# ACDC phenotype / 4-class segmentation (public proxy — not private AMI MACE).
+# Point data.root at the official ACDC tree once downloaded:
+#   data.root: E:/data/ACDC/training
+# Fake layout for CI: python -c "from reconseg3d.data.acdc import make_fake_acdc; make_fake_acdc('data/acdc')"
+
+seed: 42
+deterministic: true
+device: auto

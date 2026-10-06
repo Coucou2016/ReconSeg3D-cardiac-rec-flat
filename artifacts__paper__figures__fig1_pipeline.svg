@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="431.28pt" height="202.9405pt" viewBox="0 0 431.28 202.9405" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-09-15T18:10:52.725500</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.10.9, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 202.9405 
+L 431.28 202.9405 
+L 431.28 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 12.0816 128.899088 
+L 84.1752 128.899088 
+L 84.1752 68.893441 
+L 12.0816 68.893441 
+L 12.0816 128.899088 
+z
+" clip-path="url(#p5329533738)" style="fill: none; stroke: #333333; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 96.8976 128.899088 
+L 168.9912 128.899088 
+L 168.9912 68.893441 
+L 96.8976 68.893441 
+L 96.8976 128.899088 
+z
+" clip-path="url(#p5329533738)" style="fill: none; stroke: #333333; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 181.7136 128.899088 
+L 275.0112 128.899088 
+L 275.0112 68.893441 
+L 181.7136 68.893441 
+L 181.7136 128.899088 
+z
+" clip-path="url(#p5329533738)" style="fill: none; stroke: #333333; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 287.7336 128.899088 
+L 359.8272 128.899088 
+L 359.8272 68.893441 
+L 287.7336 68.893441 
+L 287.7336 128.899088 
+z
+" clip-path="url(#p5329533738)" style="fill: none; stroke: #333333; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="font-size: 10px; font-family: 'Times New Roman', 'Times', 'SimSun', 'STSong', 'DejaVu Serif', serif" transform="translate(27.156525 96.062827)">Sparse SA</text>
+    <text style="font-size: 10px; font-family: 'Times New Roman', 'Times', 'SimSun', 'STSong', 'DejaVu Serif', serif" transform="translate(28.276056 106.53439)">cine stack</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 10px; font-family: 'Times New Roman', 'Times', 'SimSun', 'STSong', 'DejaVu Serif', serif" transform="translate(113.0569 96.062827)">Per-frame</text>
+    <text style="font-size: 10px; font-family: 'Times New Roman', 'Times', 'SimSun', 'STSong', 'DejaVu Serif', serif" transform="translate(114.479556 106.53439)">3D recon</text>
+   </g>
+   <g id="text_3">
+    <text style="font-size: 10px; font-family: 'Times New Roman', 'Times', 'SimSun', 'STSong', 'DejaVu Serif', serif" transform="translate(192.952244 90.808296)">Geometry motion</text>
+    <text style="font-size: 10px; font-family: 'Times New Roman', 'Times', 'SimSun', 'STSong', 'DejaVu Serif', serif" transform="translate(187.531931 101.298608)">L_inv / smooth / Jac</text>
+    <text style="font-size: 10px; font-family: 'Times New Roman', 'Times', 'SimSun', 'STSong', 'DejaVu Serif', serif" transform="translate(201.705369 111.788921)">loop / ED-ref</text>
+   </g>
+   <g id="text_4">
+    <text style="font-size: 10px; font-family: 'Times New Roman', 'Times', 'SimSun', 'STSong', 'DejaVu Serif', serif" transform="translate(301.976494 96.053452)">ED/ES seg</text>
+    <text style="font-size: 10px; font-family: 'Times New Roman', 'Times', 'SimSun', 'STSong', 'DejaVu Serif', serif" transform="translate(287.359306 106.543765)">(+ optional heads)</text>
+   </g>
+   <g id="patch_6">
+    <path d="M 86.172393 100.200735 
+Q 90.536055 100.200735 93.669879 100.200735 
+" style="fill: none; stroke: #000000; stroke-width: 1.1; stroke-linecap: round"/>
+    <path d="M 89.269879 98.000735 
+L 93.669879 100.200735 
+L 89.269879 102.400735 
+" style="fill: none; stroke: #000000; stroke-width: 1.1; stroke-linecap: round"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 170.988393 100.200735 
+Q 175.352055 100.200735 178.485879 100.200735 
+" style="fill: none; stroke: #000000; stroke-width: 1.1; stroke-linecap: round"/>
+    <path d="M 174.085879 98.000735 
+L 178.485879 100.200735 
+L 174.085879 102.400735 
+" style="fill: none; stroke: #000000; stroke-width: 1.1; stroke-linecap: round"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 277.008393 100.200735 
+Q 281.372055 100.200735 284.505879 100.200735 
+" style="fill: none; stroke: #000000; stroke-width: 1.1; stroke-linecap: round"/>
+    <path d="M 280.105879 98.000735 
+L 284.505879 100.200735 
+L 280.105879 102.400735 
+" style="fill: none; stroke: #000000; stroke-width: 1.1; stroke-linecap: round"/>
+   </g>
+   <g id="text_5">
+    <text style="font-style: italic; font-size: 9px; font-family: 'Times New Roman', 'Times', 'SimSun', 'STSong', 'DejaVu Serif', serif; text-anchor: middle; fill: #595959" x="215.64" y="170.642147" transform="rotate(-0 215.64 170.642147)">Auxiliary: image-cycle (intensity) · demoted volume-curve · HeartTTable-lite = fusion ablation only</text>
+   </g>
+   <g id="text_6">
+    <text style="font-size: 12px; font-family: 'Times New Roman', 'Times', 'SimSun', 'STSong', 'DejaVu Serif', serif; text-anchor: middle" x="215.64" y="11.9325" transform="rotate(-0 215.64 11.9325)">Fig. 1 | Geometry-constrained 4D recon–seg–motion pipeline</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p5329533738">
+   <rect x="3.6" y="21.9325" width="424.08" height="177.408"/>
+  </clipPath>
+ </defs>
+</svg>

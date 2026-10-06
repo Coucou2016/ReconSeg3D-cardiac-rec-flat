@@ -1,0 +1,32 @@
+[
+  {
+    "name": "broadcast_baseline",
+    "config": "configs/ablations/broadcast_baseline.yaml",
+    "output_dir": "outputs\\ablations_smoke_v2\\broadcast_baseline"
+  },
+  {
+    "name": "per_frame_no_motion",
+    "config": "configs/ablations/per_frame_no_motion.yaml",
+    "output_dir": "outputs\\ablations_smoke_v2\\per_frame_no_motion"
+  },
+  {
+    "name": "per_frame_motion",
+    "config": "configs/ablations/per_frame_motion.yaml",
+    "output_dir": "outputs\\ablations_smoke_v2\\per_frame_motion"
+  },
+  {
+    "name": "fusion_concat",
+    "config": "configs/ablations/fusion_concat.yaml",
+    "output_dir": "outputs\\ablations_smoke_v2\\fusion_concat"
+  },
+  {
+    "name": "fusion_heart_ttable",
+    "config": "configs/ablations/fusion_heart_ttable.yaml",
+    "output_dir": "outputs\\ablations_smoke_v2\\fusion_heart_ttable"
+  },
+  {
+    "name": "task_phenotype",
+    "config": "configs/ablations/task_phenotype.yaml",
+    "output_dir": "outputs\\ablations_smoke_v2\\task_phenotype"
+  }
+]
