@@ -1,7 +1,7 @@
 {
   "purpose": "flat snapshot; key = flat root-level filename, value = original repo-relative path",
   "source_repo": "https://github.com/Coucou2016/ReconSeg3D-cardiac-rec",
-  "n_files": 234,
+  "n_files": 235,
   "files": {
     ".gitignore": {
       "original_path": ".gitignore",
@@ -502,6 +502,10 @@
     "docs__paper__manuscript.html": {
       "original_path": "docs/paper/manuscript.html",
       "bytes": 716021
+    },
+    "docs__paper__manuscript.pdf": {
+      "original_path": "docs/paper/manuscript.pdf",
+      "bytes": 616130
     },
     "pyproject.toml": {
       "original_path": "pyproject.toml",
